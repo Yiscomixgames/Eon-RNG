@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Aura RNG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;500&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#05050f;font-family:'Inter',sans-serif;color:#e2e8f0}
+@keyframes popIn   {0%{transform:scale(0);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+@keyframes rarePop {0%{transform:scale(0.4);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@keyframes megaPop {0%{transform:scale(0) rotate(-15deg);opacity:0}60%{transform:scale(1.2) rotate(3deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes glowEpic  {0%,100%{box-shadow:0 0 6px rgba(192,132,252,.5)}50%{box-shadow:0 0 16px rgba(192,132,252,.95)}}
+@keyframes glowLeg   {0%,100%{box-shadow:0 0 8px rgba(251,191,36,.6)}50%{box-shadow:0 0 22px rgba(251,191,36,1),0 0 40px rgba(251,191,36,.4)}}
+@keyframes glowMyth  {0%,100%{box-shadow:0 0 10px rgba(249,115,22,.7)}50%{box-shadow:0 0 26px rgba(249,115,22,1),0 0 50px rgba(249,115,22,.4)}}
+@keyframes glowDiv   {0%,100%{box-shadow:0 0 12px rgba(232,121,249,.7)}50%{box-shadow:0 0 30px rgba(232,121,249,1),0 0 60px rgba(232,121,249,.5)}}
+@keyframes glowCos   {0%,100%{box-shadow:0 0 14px rgba(34,211,238,.7)}50%{box-shadow:0 0 34px rgba(34,211,238,1),0 0 70px rgba(34,211,238,.5)}}
+@keyframes glowCel   {0%,100%{box-shadow:0 0 16px rgba(254,240,138,.8)}50%{box-shadow:0 0 38px rgba(254,240,138,1),0 0 80px rgba(254,240,138,.6)}}
+@keyframes glowTrans {0%,100%{box-shadow:0 0 18px rgba(226,232,240,.8),0 0 35px rgba(226,232,240,.3)}50%{box-shadow:0 0 40px #fff,0 0 80px rgba(226,232,240,.6)}}
+@keyframes glowPrim  {0%,100%{box-shadow:0 0 20px rgba(251,146,60,.9)}50%{box-shadow:0 0 45px rgba(251,146,60,1),0 0 90px rgba(251,146,60,.5)}}
+@keyframes glowAbyss {0%,100%{box-shadow:0 0 20px rgba(220,38,38,.9)}50%{box-shadow:0 0 45px rgba(220,38,38,1),0 0 90px rgba(220,38,38,.4)}}
+@keyframes glowEtern {0%,100%{box-shadow:0 0 22px rgba(129,140,248,.9)}50%{box-shadow:0 0 50px rgba(129,140,248,1),0 0 100px rgba(129,140,248,.5)}}
+@keyframes glowOmega {0%,100%{box-shadow:0 0 25px rgba(255,255,255,.9)}50%{box-shadow:0 0 60px #fff,0 0 120px rgba(255,255,255,.6)}}
+@keyframes glowSec   {0%{box-shadow:0 0 18px rgba(99,102,241,.9)}50%{box-shadow:0 0 35px rgba(139,92,246,1),0 0 70px rgba(99,102,241,.5)}100%{box-shadow:0 0 18px rgba(99,102,241,.9)}}
+@keyframes glitchA   {0%{transform:none;filter:none;box-shadow:0 0 22px rgba(236,72,153,.9)}25%{transform:translateX(3px) skewX(2deg);filter:hue-rotate(90deg);box-shadow:0 0 40px rgba(236,72,153,1)}50%{transform:translateX(-2px);filter:hue-rotate(180deg);box-shadow:0 0 50px rgba(139,92,246,1)}75%{transform:translateX(2px);filter:hue-rotate(270deg);box-shadow:0 0 40px rgba(34,211,238,1)}100%{transform:none;filter:none}}
+@keyframes voidA     {0%,100%{filter:brightness(1) saturate(.2);box-shadow:0 0 12px rgba(71,85,105,.8)}50%{filter:brightness(.4) saturate(0) invert(.05);box-shadow:0 0 30px rgba(30,41,59,1)}}
+@keyframes rainbowI  {0%{box-shadow:0 0 28px #ff006e,0 0 56px #ff006e40}17%{box-shadow:0 0 28px #f97316,0 0 56px #f9731640}34%{box-shadow:0 0 28px #fbbf24,0 0 56px #fbbf2440}50%{box-shadow:0 0 28px #4ade80,0 0 56px #4ade8040}67%{box-shadow:0 0 28px #60a5fa,0 0 56px #60a5fa40}84%{box-shadow:0 0 28px #c084fc,0 0 56px #c084fc40}100%{box-shadow:0 0 28px #ff006e,0 0 56px #ff006e40}}
+.b-common      {animation:popIn .2s ease-out}
+.b-rare        {animation:popIn .25s ease-out}
+.b-epic        {animation:popIn .3s ease-out,glowEpic 2.5s ease-in-out .3s infinite}
+.b-legendary   {animation:rarePop .35s ease-out,glowLeg 2s ease-in-out .35s infinite}
+.b-mythic      {animation:rarePop .4s ease-out,glowMyth 1.8s ease-in-out .4s infinite}
+.b-divine      {animation:rarePop .4s ease-out,glowDiv 1.7s ease-in-out .4s infinite}
+.b-cosmic      {animation:rarePop .4s ease-out,glowCos 1.6s ease-in-out .4s infinite}
+.b-celestial   {animation:megaPop .45s ease-out,glowCel 1.5s ease-in-out .45s infinite}
+.b-transcendent{animation:megaPop .5s ease-out,glowTrans 1.4s ease-in-out .5s infinite}
+.b-primordial  {animation:megaPop .5s ease-out,glowPrim 1.3s ease-in-out .5s infinite}
+.b-abyssal     {animation:megaPop .5s ease-out,glowAbyss 1.2s ease-in-out .5s infinite}
+.b-eternal     {animation:megaPop .55s ease-out,glowEtern 1.2s ease-in-out .55s infinite}
+.b-omega       {animation:megaPop .6s ease-out,glowOmega 1s ease-in-out .6s infinite}
+.b-secret      {animation:megaPop .5s ease-out,glowSec 2s linear .5s infinite}
+.b-ultrasecret {animation:megaPop .5s ease-out,glitchA .5s steps(3) .5s infinite}
+.b-null        {animation:megaPop .5s ease-out,voidA 3s ease-in-out .5s infinite}
+.b-impossible  {animation:megaPop .6s ease-out,rainbowI 2s linear .6s infinite}
+@keyframes gFaded{0%,100%{box-shadow:0 0 3px rgba(107,114,128,.35)}50%{box-shadow:0 0 6px rgba(107,114,128,.5)}}
+@keyframes gVoid{0%,100%{box-shadow:0 0 20px rgba(124,58,237,.8),0 0 5px rgba(0,0,0,.6) inset}40%{box-shadow:0 0 45px rgba(124,58,237,1),0 0 70px rgba(0,0,0,.4) inset}60%{box-shadow:0 0 15px rgba(139,92,246,.6)}}
+.b-faded       {animation:popIn .15s ease-out,gFaded 3s ease-in-out infinite}
+.b-voidborn    {animation:megaPop .55s ease-out,gVoid 1.3s ease-in-out .55s infinite}
+@keyframes holoSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes floatP     {0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.15)}}
+@keyframes rollPulse  {0%,100%{box-shadow:0 0 20px rgba(124,58,237,.6),0 4px 24px rgba(124,58,237,.3)}50%{box-shadow:0 0 50px rgba(167,139,250,.95),0 4px 40px rgba(124,58,237,.6)}}
+@keyframes rollTokyo  {0%,100%{box-shadow:0 0 20px rgba(232,0,13,.6)}50%{box-shadow:0 0 50px rgba(232,0,13,.95),0 0 80px rgba(232,0,13,.3)}}
+@keyframes rollInfern {0%,100%{box-shadow:0 0 20px rgba(255,69,0,.6)}50%{box-shadow:0 0 50px rgba(255,140,0,.95),0 0 80px rgba(220,38,38,.3)}}
+@keyframes rollTechy  {0%,100%{box-shadow:0 0 20px rgba(0,255,65,.5)}50%{box-shadow:0 0 50px rgba(0,255,65,.9),0 0 80px rgba(0,255,65,.2)}}
+@keyframes titleGlow  {0%,100%{text-shadow:0 0 30px rgba(167,139,250,.4)}50%{text-shadow:0 0 70px rgba(167,139,250,.9)}}
+@keyframes titleTokyo {0%,100%{text-shadow:0 0 30px rgba(232,0,13,.5)}50%{text-shadow:0 0 70px rgba(232,0,13,.9),0 0 120px rgba(255,255,255,.2)}}
+@keyframes titleInfern{0%,100%{text-shadow:0 0 30px rgba(255,69,0,.5)}50%{text-shadow:0 0 70px rgba(255,140,0,.9),0 0 120px rgba(220,38,38,.3)}}
+@keyframes titleTechy {0%,100%{text-shadow:0 0 30px rgba(0,255,65,.4)}50%{text-shadow:0 0 70px rgba(0,255,65,.9)}}
+@keyframes slideDown  {from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes notifAnim  {0%{opacity:0;transform:translateX(-50%) translateY(-14px)}12%,88%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(-14px)}}
+@keyframes flashFade  {0%{opacity:.72}100%{opacity:0}}
+@keyframes spinIcon   {from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes slotFlick  {0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes fireDrift  {0%{transform:translateY(0) scale(1);opacity:.7}100%{transform:translateY(-80px) scale(0);opacity:0}}
+@keyframes matrixFall {0%{transform:translateY(-20px);opacity:1}100%{transform:translateY(100px);opacity:0}}
+@keyframes confettiFall{0%{transform:translateY(-10px) rotate(0deg);opacity:0}5%{opacity:1}90%{opacity:.9}100%{transform:translateY(110vh) rotate(var(--cr,360deg));opacity:0}}
+@keyframes balloonRise{0%{transform:translateY(10px) rotate(-4deg);opacity:0}8%{opacity:1}92%{opacity:.9}100%{transform:translateY(-110vh) rotate(4deg);opacity:0}}
+@keyframes fireworkOut{0%{transform:translate(0,0) scale(0);opacity:1}100%{transform:translate(var(--fx,30px),var(--fy,-30px)) scale(1);opacity:0}}
+@keyframes bannerShimmer{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+@keyframes candleFlicker{0%,100%{transform:scaleX(1) scaleY(1);opacity:.9}25%{transform:scaleX(.85) scaleY(1.1)}50%{transform:scaleX(1.1) scaleY(.95);opacity:.8}75%{transform:scaleX(.9) scaleY(1.05)}}
+@keyframes partyPop{0%{transform:scale(0) rotate(0);opacity:1}60%{transform:scale(1.15) rotate(5deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:#05050f}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+input{outline:none;font-family:inherit}
+button{font-family:inherit;cursor:pointer;transition:all .15s}
+button:active:not(:disabled){transform:scale(.96)}
+button:disabled{cursor:not-allowed}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+const {useState,useEffect,useRef}=React;
+
+// ── RARITIES (divine→impossible made significantly harder) ────
+const RARITY={
+  faded:       {label:"Faded",       color:"#6b7280",weight:35,      coins:0,           ord:1},
+  common:      {label:"Common",      color:"#9ca3af",weight:20,      coins:1,           ord:2},
+  rare:        {label:"Rare",        color:"#60a5fa",weight:12,      coins:25,          ord:3},
+  epic:        {label:"Epic",        color:"#c084fc",weight:8,       coins:100,         ord:4},
+  legendary:   {label:"Legendary",   color:"#fbbf24",weight:4.5,     coins:500,         ord:5},
+  mythic:      {label:"Mythic",      color:"#f97316",weight:2.5,     coins:2500,        ord:6},
+  divine:      {label:"Divine",      color:"#e879f9",weight:0.8,     coins:12500,       ord:7},
+  cosmic:      {label:"Cosmic",      color:"#22d3ee",weight:0.28,    coins:65000,       ord:8},
+  celestial:   {label:"Celestial",   color:"#fef08a",weight:0.07,    coins:250000,      ord:9},
+  transcendent:{label:"Transcendent",color:"#e2e8f0",weight:0.035,   coins:750000,      ord:10},
+  primordial:  {label:"Primordial",  color:"#fb923c",weight:0.012,   coins:2500000,     ord:11},
+  abyssal:     {label:"Abyssal",     color:"#dc2626",weight:0.004,   coins:10000000,    ord:12},
+  eternal:     {label:"Eternal",     color:"#818cf8",weight:0.0012,  coins:50000000,    ord:13},
+  voidborn:    {label:"Voidborn",    color:"#7c3aed",weight:0.0006,  coins:150000000,   ord:14},
+  omega:       {label:"Omega",       color:"#f8fafc",weight:0.00025, coins:250000000,   ord:15},
+  secret:      {label:"Secret",      color:"#6366f1",weight:0.006,   coins:1000000000,  ord:16},
+  ultrasecret: {label:"Ultra Secret",color:"#ec4899",weight:0.00002, coins:5000000000,  ord:17},
+  null:        {label:"Null",        color:"#475569",weight:0.000002,coins:25000000000, ord:18},
+  impossible:  {label:"Impossible",  color:"#ff006e",weight:0,       coins:99999999999, ord:19},
+};
+const RK=Object.keys(RARITY);
+const TOTAL_W=RK.reduce((s,k)=>s+RARITY[k].weight,0);
+
+const AURAS=[
+  {id:"droplet",    name:"Droplet",          rarity:"common",      icon:"💧"},
+  {id:"cinder",     name:"Cinder",           rarity:"common",      icon:"🔸"},
+  {id:"flame",      name:"Flame",            rarity:"common",      icon:"🔥"},
+  {id:"breeze",     name:"Breeze",           rarity:"common",      icon:"💨"},
+  {id:"spark",      name:"Spark",            rarity:"common",      icon:"⚡"},
+  {id:"leaf",       name:"Leaf",             rarity:"common",      icon:"🍃"},
+  {id:"pebble",     name:"Pebble",           rarity:"common",      icon:"🪨"},
+  {id:"ripple",     name:"Ripple",           rarity:"common",      icon:"〰️"},
+  {id:"mist",       name:"Mist",             rarity:"common",      icon:"🌫️"},
+  {id:"thorn",      name:"Thorn",            rarity:"common",      icon:"🌵"},
+  {id:"dust",       name:"Dust",             rarity:"common",      icon:"🟤"},
+  {id:"ash",        name:"Ash",              rarity:"common",      icon:"⬜"},
+  {id:"frost",      name:"Frost",            rarity:"rare",        icon:"❄️"},
+  {id:"ember",      name:"Ember",            rarity:"rare",        icon:"✨"},
+  {id:"thunder",    name:"Thunder",          rarity:"rare",        icon:"⛈️"},
+  {id:"crystal",    name:"Crystal",          rarity:"rare",        icon:"💎"},
+  {id:"shadow",     name:"Shadow",           rarity:"rare",        icon:"🌑"},
+  {id:"tide",       name:"Tide",             rarity:"rare",        icon:"🌊"},
+  {id:"aurora",     name:"Aurora",           rarity:"rare",        icon:"🌈"},
+  {id:"blizzard",   name:"Blizzard",         rarity:"rare",        icon:"🌨️"},
+  {id:"glacier",    name:"Glacier",          rarity:"rare",        icon:"🏔️"},
+  {id:"vine",       name:"Vine",             rarity:"rare",        icon:"🌿"},
+  {id:"gale",       name:"Gale",             rarity:"rare",        icon:"🌬️"},
+  {id:"quartz",     name:"Quartz",           rarity:"rare",        icon:"🔮"},
+  {id:"solarflare", name:"Solar Flare",      rarity:"epic",        icon:"🌞"},
+  {id:"nebula",     name:"Nebula",           rarity:"epic",        icon:"🌌"},
+  {id:"inferno",    name:"Inferno",          rarity:"epic",        icon:"🌋"},
+  {id:"acidrain",   name:"Acid Rain",        rarity:"epic",        icon:"🧪"},
+  {id:"supernova",  name:"Supernova",        rarity:"epic",        icon:"💥"},
+  {id:"blackhole",  name:"Black Hole",       rarity:"epic",        icon:"🕳️"},
+  {id:"wormhole",   name:"Wormhole",         rarity:"epic",        icon:"🌀"},
+  {id:"antimatter", name:"Antimatter",       rarity:"epic",        icon:"⚛️"},
+  {id:"cursed",     name:"Cursed Flame",     rarity:"epic",        icon:"🔮"},
+  {id:"phantom",    name:"Phantom",          rarity:"epic",        icon:"👻"},
+  {id:"crystrain",  name:"Crystal Rain",     rarity:"legendary",   icon:"💠"},
+  {id:"angels",     name:"Angel's Tears",    rarity:"legendary",   icon:"😇"},
+  {id:"timerift",   name:"Time Rift",        rarity:"legendary",   icon:"⏱️"},
+  {id:"singularity",name:"Singularity",      rarity:"legendary",   icon:"🌟"},
+  {id:"paradox",    name:"Paradox",          rarity:"legendary",   icon:"♾️"},
+  {id:"ancientvoid",name:"Ancient Void",     rarity:"legendary",   icon:"🌑"},
+  {id:"divlight",   name:"Divine Light",     rarity:"legendary",   icon:"✨"},
+  {id:"infloop",    name:"Infinity Loop",    rarity:"legendary",   icon:"🔄"},
+  {id:"universe",   name:"Universe",         rarity:"legendary",   icon:"🪐"},
+  {id:"dbreath",    name:"Dragon's Breath",  rarity:"legendary",   icon:"🐉"},
+  {id:"therift",    name:"The Rift",         rarity:"mythic",      icon:"🌀"},
+  {id:"nothingness",name:"Nothingness",      rarity:"mythic",      icon:"⬛"},
+  {id:"creation",   name:"Creation",         rarity:"mythic",      icon:"🌱"},
+  {id:"pulsar",     name:"Pulsar",           rarity:"mythic",      icon:"📡"},
+  {id:"quicksand",  name:"Quicksand",        rarity:"mythic",      icon:"⏳"},
+  {id:"cometpulse", name:"Comet Pulse",      rarity:"mythic",      icon:"🌠"},
+  {id:"voidstorm",  name:"Void Storm",       rarity:"mythic",      icon:"🌪️"},
+  {id:"ethereal",   name:"Ethereal",         rarity:"mythic",      icon:"🫧"},
+  {id:"etflame",    name:"Eternal Flame",    rarity:"divine",      icon:"🕯️"},
+  {id:"sstorm",     name:"Solar Storm",      rarity:"divine",      icon:"☀️"},
+  {id:"cosbloom",   name:"Cosmic Bloom",     rarity:"divine",      icon:"🌸"},
+  {id:"quantum",    name:"Quantum",          rarity:"divine",      icon:"⚛️"},
+  {id:"starforge",  name:"Star Forge",       rarity:"divine",      icon:"⭐"},
+  {id:"holylight",  name:"Holy Light",       rarity:"divine",      icon:"💡"},
+  {id:"seraphim",   name:"Seraphim",         rarity:"divine",      icon:"👼"},
+  {id:"darkmatter", name:"Dark Matter",      rarity:"cosmic",      icon:"🌑"},
+  {id:"evhorizon",  name:"Event Horizon",    rarity:"cosmic",      icon:"🔭"},
+  {id:"voidwalk",   name:"Void Walker",      rarity:"cosmic",      icon:"👁️"},
+  {id:"astral",     name:"Astral Plane",     rarity:"cosmic",      icon:"🔮"},
+  {id:"nebcore",    name:"Nebular Core",     rarity:"cosmic",      icon:"💫"},
+  {id:"darkenergy", name:"Dark Energy",      rarity:"cosmic",      icon:"🌌"},
+  {id:"gravwave",   name:"Gravity Wave",     rarity:"cosmic",      icon:"〰️"},
+  {id:"celgen",     name:"Celestial Genesis",rarity:"celestial",   icon:"✨"},
+  {id:"celcol",     name:"Celestial Collapse",rarity:"celestial",  icon:"💥"},
+  {id:"celstorm",   name:"Celestial Storm",  rarity:"celestial",   icon:"⚡"},
+  {id:"starbirth",  name:"Star Birth",       rarity:"celestial",   icon:"🌟"},
+  {id:"celdawn",    name:"Celestial Dawn",   rarity:"celestial",   icon:"🌅"},
+  {id:"celfire",    name:"Celestial Fire",   rarity:"celestial",   icon:"🔆"},
+  {id:"ascension",  name:"Ascension",        rarity:"transcendent",icon:"🌤️"},
+  {id:"beyond",     name:"Beyond",           rarity:"transcendent",icon:"🚀"},
+  {id:"enlighten",  name:"Enlightenment",    rarity:"transcendent",icon:"💡"},
+  {id:"transcend",  name:"Transcendence",    rarity:"transcendent",icon:"🌈"},
+  {id:"apex",       name:"Apex",             rarity:"transcendent",icon:"⛰️"},
+  {id:"thechosen",  name:"The Chosen",       rarity:"transcendent",icon:"👑"},
+  {id:"prichaos",   name:"Primordial Chaos", rarity:"primordial",  icon:"🌀"},
+  {id:"prisea",     name:"Primordial Sea",   rarity:"primordial",  icon:"🌊"},
+  {id:"privoid",    name:"Primordial Void",  rarity:"primordial",  icon:"🕳️"},
+  {id:"origin",     name:"Origin",           rarity:"primordial",  icon:"🌅"},
+  {id:"theancient", name:"The Ancient",      rarity:"primordial",  icon:"🗿"},
+  {id:"leviathan",  name:"Leviathan",        rarity:"abyssal",     icon:"🐉"},
+  {id:"deepvoid",   name:"Deep Void",        rarity:"abyssal",     icon:"🌑"},
+  {id:"abytide",    name:"Abyssal Tide",     rarity:"abyssal",     icon:"🌊"},
+  {id:"darkcurr",   name:"Dark Current",     rarity:"abyssal",     icon:"💧"},
+  {id:"thedeep",    name:"The Deep",         rarity:"abyssal",     icon:"🕳️"},
+  {id:"kraken",     name:"Kraken",           rarity:"abyssal",     icon:"🦑"},
+  {id:"eternity",   name:"Eternity",         rarity:"eternal",     icon:"♾️"},
+  {id:"etabyss",    name:"Eternal Abyss",    rarity:"eternal",     icon:"🌑"},
+  {id:"etdawn",     name:"Eternal Dawn",     rarity:"eternal",     icon:"🌄"},
+  {id:"etstorm",    name:"Eternal Storm",    rarity:"eternal",     icon:"⚡"},
+  {id:"timeless",   name:"Timeless",         rarity:"eternal",     icon:"🕐"},
+  {id:"theend",     name:"The End",          rarity:"omega",       icon:"🌑"},
+  {id:"finalform",  name:"Final Form",       rarity:"omega",       icon:"⚡"},
+  {id:"lastlight",  name:"Last Light",       rarity:"omega",       icon:"✨"},
+  {id:"terminus",   name:"Terminus",         rarity:"omega",       icon:"🔴"},
+  {id:"abszero",    name:"Absolute Zero",    rarity:"omega",       icon:"❄️"},
+  {id:"theunseen",  name:"The Unseen",       rarity:"secret",      icon:"👁️"},
+  {id:"whisper",    name:"Whisper",          rarity:"secret",      icon:"💬"},
+  {id:"phveil",     name:"Phantom Veil",     rarity:"secret",      icon:"👻"},
+  {id:"theforgot",  name:"The Forgotten",    rarity:"secret",      icon:"🌑"},
+  {id:"enigma",     name:"Enigma",           rarity:"secret",      icon:"❓"},
+  {id:"forbidden",  name:"Forbidden",        rarity:"ultrasecret", icon:"🚫"},
+  {id:"theunknown", name:"The Unknown",      rarity:"ultrasecret", icon:"❓"},
+  {id:"ancsecret",  name:"Ancient Secret",   rarity:"ultrasecret", icon:"📜"},
+  {id:"corrtruth",  name:"Corrupted Truth",  rarity:"ultrasecret", icon:"💀"},
+  {id:"zero",       name:"Zero",             rarity:"null",        icon:"○"},
+  {id:"absence",    name:"The Absence",      rarity:"null",        icon:"◯"},
+  {id:"voidcore",   name:"Void Core",        rarity:"null",        icon:"🕳️"},
+  {id:"thesilence", name:"The Silence",      rarity:"null",        icon:"🔇"},
+  // ── IMPOSSIBLE — secret admin auras (code only) ──
+  {id:"owner_aura", name:"Yamanote Soul",    rarity:"impossible",  icon:"🚆", theme:"tokyo"},
+  {id:"sino_aura",  name:"Hellfire King",    rarity:"impossible",  icon:"😈", theme:"infernal"},
+  {id:"paji_aura",  name:"The Grid",         rarity:"impossible",  icon:"💻", theme:"techy"},
+  // ── 🎂 BIRTHDAY AURAS — June 7th only ──
+  {id:"confetti",     name:"Confetti",         rarity:"common",   icon:"🎊",bday:true},
+  {id:"balloon",      name:"Balloon",          rarity:"common",   icon:"🎈",bday:true},
+  {id:"partyhat",     name:"Party Hat",        rarity:"common",   icon:"🎉",bday:true},
+  {id:"streamer",     name:"Streamer",         rarity:"rare",     icon:"🎀",bday:true},
+  {id:"sparkler",     name:"Sparkler",         rarity:"rare",     icon:"✨",bday:true},
+  {id:"partypopper",  name:"Party Popper",     rarity:"rare",     icon:"🎉",bday:true},
+  {id:"pinata",       name:"Piñata",           rarity:"epic",     icon:"🪅",bday:true},
+  {id:"bdaycake",     name:"Birthday Cake",    rarity:"epic",     icon:"🎂",bday:true},
+  {id:"fireworkburst",name:"Firework Burst",   rarity:"epic",     icon:"🎆",bday:true},
+  {id:"grandfinal",   name:"Grand Finale",     rarity:"legendary",icon:"🎆",bday:true},
+  {id:"bdaycrown",    name:"Birthday Crown",   rarity:"legendary",icon:"👑",bday:true},
+  {id:"wishingstar",  name:"Wishing Star",     rarity:"legendary",icon:"⭐",bday:true},
+  {id:"celnova",      name:"Celebration Nova", rarity:"mythic",   icon:"🌟",bday:true},
+  {id:"thecandle",    name:"The Candle",       rarity:"divine",   icon:"🕯️",bday:true},
+  {id:"starlightwish",name:"Starlight Wish",   rarity:"cosmic",   icon:"💫",bday:true},
+  {id:"thegift",      name:"The Gift",         rarity:"eternal",  icon:"🎁",bday:true},
+  {id:"bdayeternal",  name:"Birthday Eternal", rarity:"omega",    icon:"♾️",bday:true},
+// ── Elemental Fusion ──
+  {id:"steamheart", name:"Steamheart", rarity:"common", icon:"💨", world:"elemental"},
+  {id:"petrichor", name:"Petrichor", rarity:"common", icon:"🌦️", world:"elemental"},
+  {id:"magmafrost", name:"Magmafrost", rarity:"rare", icon:"🌋", world:"elemental"},
+  {id:"voltide", name:"Voltide", rarity:"rare", icon:"⚡", world:"elemental"},
+  {id:"emberquake", name:"Emberquake", rarity:"epic", icon:"🌋", world:"elemental"},
+  {id:"frostspark", name:"Frostspark", rarity:"epic", icon:"❄️", world:"elemental"},
+  {id:"stormforge", name:"Stormforge", rarity:"legendary", icon:"🔨", world:"elemental"},
+  {id:"terraflux", name:"Terraflux", rarity:"mythic", icon:"🌍", world:"elemental"},
+  {id:"cryoflame", name:"Cryoflame", rarity:"divine", icon:"🔥", world:"elemental"},
+  {id:"genesisstorm", name:"Genesis Storm", rarity:"cosmic", icon:"🌪️", world:"elemental"},
+  // ── Mythic Beasts ──
+  {id:"wyrmling", name:"Wyrmling", rarity:"common", icon:"🐲", world:"mythic_beasts"},
+  {id:"griffinfeather", name:"Griffin's Feather", rarity:"common", icon:"🪶", world:"mythic_beasts"},
+  {id:"basiliskgaze", name:"Basilisk Gaze", rarity:"rare", icon:"🐍", world:"mythic_beasts"},
+  {id:"chimerasroar", name:"Chimera's Roar", rarity:"rare", icon:"🦁", world:"mythic_beasts"},
+  {id:"hydracoil", name:"Hydra Coil", rarity:"epic", icon:"🐉", world:"mythic_beasts"},
+  {id:"phoenixascension", name:"Phoenix Ascension", rarity:"epic", icon:"🔥", world:"mythic_beasts"},
+  {id:"krakenswrath", name:"Kraken's Wrath", rarity:"legendary", icon:"🐙", world:"mythic_beasts"},
+  {id:"cerberusgate", name:"Cerberus Gate", rarity:"mythic", icon:"🐺", world:"mythic_beasts"},
+  {id:"sphinxriddle", name:"Sphinx Riddle", rarity:"divine", icon:"🗿", world:"mythic_beasts"},
+  {id:"worldserpent", name:"World Serpent", rarity:"cosmic", icon:"🐍", world:"mythic_beasts"},
+  // ── Cyberpunk Grid ──
+  {id:"bitflip", name:"Bit Flip", rarity:"common", icon:"0️⃣", world:"cyberpunk"},
+  {id:"neondrip", name:"Neon Drip", rarity:"common", icon:"💧", world:"cyberpunk"},
+  {id:"firewallbreach", name:"Firewall Breach", rarity:"rare", icon:"🧱", world:"cyberpunk"},
+  {id:"datawraith", name:"Data Wraith", rarity:"rare", icon:"👻", world:"cyberpunk"},
+  {id:"error404", name:"404 Error", rarity:"epic", icon:"❌", world:"cyberpunk"},
+  {id:"overclock", name:"Overclock", rarity:"epic", icon:"🔥", world:"cyberpunk"},
+  {id:"neoncircuit", name:"Neon Circuit", rarity:"legendary", icon:"💡", world:"cyberpunk"},
+  {id:"mainframecore", name:"Mainframe Core", rarity:"mythic", icon:"🖥️", world:"cyberpunk"},
+  {id:"rootaccess", name:"Root Access", rarity:"divine", icon:"🔓", world:"cyberpunk"},
+  {id:"singularityexe", name:"Singularity.exe", rarity:"cosmic", icon:"💻", world:"cyberpunk"},
+  // ── Abyssal Ocean ──
+  {id:"tidepool", name:"Tide Pool", rarity:"common", icon:"🐚", world:"ocean"},
+  {id:"seafoam", name:"Sea Foam", rarity:"common", icon:"🌊", world:"ocean"},
+  {id:"biolume", name:"Bioluminescence", rarity:"rare", icon:"✨", world:"ocean"},
+  {id:"coralbloom", name:"Coral Bloom", rarity:"rare", icon:"🪸", world:"ocean"},
+  {id:"anglerlure", name:"Anglerfish Lure", rarity:"epic", icon:"🎣", world:"ocean"},
+  {id:"ripcurrent", name:"Rip Current", rarity:"epic", icon:"🌀", world:"ocean"},
+  {id:"tsunamicore", name:"Tsunami Core", rarity:"legendary", icon:"🌊", world:"ocean"},
+  {id:"krakensink", name:"Kraken's Ink", rarity:"mythic", icon:"🦑", world:"ocean"},
+  {id:"marianadepths", name:"Mariana Depths", rarity:"divine", icon:"🕳️", world:"ocean"},
+  {id:"leviathanswake", name:"Leviathan's Wake", rarity:"cosmic", icon:"🐋", world:"ocean"},
+  // ── Cosmic Horror ──
+  {id:"whisperingshadow", name:"Whispering Shadow", rarity:"common", icon:"🌑", world:"horror"},
+  {id:"staticdread", name:"Static Dread", rarity:"common", icon:"📺", world:"horror"},
+  {id:"thewatcher", name:"The Watcher", rarity:"rare", icon:"👁️", world:"horror"},
+  {id:"unspeakable", name:"Unspeakable", rarity:"rare", icon:"🚫", world:"horror"},
+  {id:"eldritchwhisper", name:"Eldritch Whisper", rarity:"epic", icon:"👄", world:"horror"},
+  {id:"sanityfray", name:"Sanity Fray", rarity:"epic", icon:"🧠", world:"horror"},
+  {id:"madnessincarnate", name:"Madness Incarnate", rarity:"legendary", icon:"🌀", world:"horror"},
+  {id:"voidtendril", name:"Void Tendril", rarity:"mythic", icon:"🐙", world:"horror"},
+  {id:"forbiddensight", name:"Forbidden Sight", rarity:"divine", icon:"👁️", world:"horror"},
+  {id:"theoldonestirs", name:"The Old One Stirs", rarity:"cosmic", icon:"🌌", world:"horror"},
+  // ── Four Seasons ──
+  {id:"springbud", name:"Spring Bud", rarity:"common", icon:"🌱", world:"seasons"},
+  {id:"summerhaze", name:"Summer Haze", rarity:"common", icon:"☀️", world:"seasons"},
+  {id:"autumndrift", name:"Autumn Drift", rarity:"rare", icon:"🍂", world:"seasons"},
+  {id:"wintersbreath", name:"Winter's Breath", rarity:"rare", icon:"❄️", world:"seasons"},
+  {id:"monsoonking", name:"Monsoon King", rarity:"epic", icon:"🌧️", world:"seasons"},
+  {id:"blizzardsovereign", name:"Blizzard Sovereign", rarity:"epic", icon:"🌨️", world:"seasons"},
+  {id:"harvestmoon", name:"Harvest Moon", rarity:"legendary", icon:"🌕", world:"seasons"},
+  {id:"solstice", name:"Solstice", rarity:"mythic", icon:"☀️", world:"seasons"},
+  {id:"eternalspring", name:"Eternal Spring", rarity:"divine", icon:"🌸", world:"seasons"},
+  {id:"seasonsreckoning", name:"Season's Reckoning", rarity:"cosmic", icon:"🍁", world:"seasons"},
+  // ── Ancient Civilizations ──
+  {id:"claytablet", name:"Clay Tablet", rarity:"common", icon:"📜", world:"ancient"},
+  {id:"desertwind", name:"Desert Wind", rarity:"common", icon:"🏜️", world:"ancient"},
+  {id:"pharaohscurse", name:"Pharaoh's Curse", rarity:"rare", icon:"☥", world:"ancient"},
+  {id:"terracottaguard", name:"Terracotta Guard", rarity:"rare", icon:"🗿", world:"ancient"},
+  {id:"valhallasgate", name:"Valhalla's Gate", rarity:"epic", icon:"⚔️", world:"ancient"},
+  {id:"atlantissunk", name:"Atlantis Sunk", rarity:"epic", icon:"🏛️", world:"ancient"},
+  {id:"olympusthrone", name:"Olympus Throne", rarity:"legendary", icon:"⚡", world:"ancient"},
+  {id:"mayanprophecy", name:"Mayan Prophecy", rarity:"mythic", icon:"📅", world:"ancient"},
+  {id:"colosseumecho", name:"Colosseum Echo", rarity:"divine", icon:"🏟️", world:"ancient"},
+  {id:"pyramidascension", name:"Pyramid Ascension", rarity:"cosmic", icon:"🔺", world:"ancient"},
+  // ── Sound & Frequency ──
+  {id:"staticfuzz", name:"Static Fuzz", rarity:"common", icon:"📻", world:"sound"},
+  {id:"feedbackloop", name:"Feedback Loop", rarity:"common", icon:"🔊", world:"sound"},
+  {id:"bassline", name:"Bassline", rarity:"rare", icon:"🎵", world:"sound"},
+  {id:"echochamber", name:"Echo Chamber", rarity:"rare", icon:"🗣️", world:"sound"},
+  {id:"sonicboom", name:"Sonic Boom", rarity:"epic", icon:"💥", world:"sound"},
+  {id:"treblespike", name:"Treble Spike", rarity:"epic", icon:"🎶", world:"sound"},
+  {id:"waveform", name:"Waveform", rarity:"legendary", icon:"〰️", world:"sound"},
+  {id:"frequencyshift", name:"Frequency Shift", rarity:"mythic", icon:"📡", world:"sound"},
+  {id:"resonance", name:"Resonance", rarity:"divine", icon:"🔔", world:"sound"},
+  {id:"theultrasonic", name:"The Ultrasonic", rarity:"cosmic", icon:"📢", world:"sound"},
+  // ── Dreamscape ──
+  {id:"daydreamhaze", name:"Daydream Haze", rarity:"common", icon:"💭", world:"dreams"},
+  {id:"halfasleep", name:"Half Asleep", rarity:"common", icon:"😴", world:"dreams"},
+  {id:"dejavu", name:"Deja Vu", rarity:"rare", icon:"🔁", world:"dreams"},
+  {id:"luciddream", name:"Lucid Dream", rarity:"rare", icon:"🌙", world:"dreams"},
+  {id:"sleepparalysis", name:"Sleep Paralysis", rarity:"epic", icon:"😱", world:"dreams"},
+  {id:"nightmarefuel", name:"Nightmare Fuel", rarity:"epic", icon:"👹", world:"dreams"},
+  {id:"dreamweaver", name:"Dreamweaver", rarity:"legendary", icon:"🕸️", world:"dreams"},
+  {id:"remcycle", name:"REM Cycle", rarity:"mythic", icon:"👁️", world:"dreams"},
+  {id:"thesandman", name:"The Sandman", rarity:"divine", icon:"✨", world:"dreams"},
+  {id:"dreamscape", name:"Dreamscape", rarity:"cosmic", icon:"🌌", world:"dreams"},
+  // ── Sweet Chaos ──
+  {id:"sugarrush", name:"Sugar Rush", rarity:"common", icon:"🍬", world:"sweet"},
+  {id:"bubblegumpop", name:"Bubblegum Pop", rarity:"common", icon:"🫧", world:"sweet"},
+  {id:"honeydrip", name:"Honey Drip", rarity:"rare", icon:"🍯", world:"sweet"},
+  {id:"gummycore", name:"Gummy Core", rarity:"rare", icon:"🐻", world:"sweet"},
+  {id:"choconova", name:"Choco Nova", rarity:"epic", icon:"🍫", world:"sweet"},
+  {id:"cottoncandycloud", name:"Cotton Candy Cloud", rarity:"epic", icon:"🍭", world:"sweet"},
+  {id:"candystorm", name:"Candy Storm", rarity:"legendary", icon:"🍬", world:"sweet"},
+  {id:"frostingoverflow", name:"Frosting Overflow", rarity:"mythic", icon:"🧁", world:"sweet"},
+  {id:"sugarhigh", name:"Sugar High", rarity:"divine", icon:"⚡", world:"sweet"},
+  {id:"theultimatesundae", name:"The Ultimate Sundae", rarity:"cosmic", icon:"🍨", world:"sweet"},  // ── New tier base auras ──
+  {id:"faintecho", name:"Faint Echo", rarity:"faded", icon:"🌫️"},
+  {id:"staticwhisper", name:"Static Whisper", rarity:"faded", icon:"📻"},
+  {id:"dullspark", name:"Dull Spark", rarity:"faded", icon:"⚡"},
+  {id:"voidheart", name:"Voidheart", rarity:"voidborn", icon:"🖤"},
+  {id:"genesisfracture", name:"Genesis Fracture", rarity:"voidborn", icon:"🌌"},
+];
+
+const WORLDS=[
+  {id:"elemental",name:"Elemental Fusion",icon:"🌋",color:"#f97316",cost:50000,luckBonus:0.15,speedBonus:150,shopItem:{name:"Fusion Core",boost:0.4,cost:8000}},
+  {id:"mythic_beasts",name:"Mythic Beasts",icon:"🐉",color:"#dc2626",cost:75000,luckBonus:0.15,speedBonus:150,shopItem:{name:"Dragon Scale",boost:0.4,cost:9000}},
+  {id:"cyberpunk",name:"Cyberpunk Grid",icon:"💾",color:"#00ff41",cost:100000,luckBonus:0.15,speedBonus:150,shopItem:{name:"Overclock Chip",boost:0.4,cost:10000}},
+  {id:"ocean",name:"Abyssal Ocean",icon:"🌊",color:"#0ea5e9",cost:130000,luckBonus:0.15,speedBonus:150,shopItem:{name:"Pearl of Depths",boost:0.4,cost:11000}},
+  {id:"horror",name:"Cosmic Horror",icon:"👁️",color:"#7c3aed",cost:170000,luckBonus:0.15,speedBonus:150,shopItem:{name:"Forbidden Tome",boost:0.4,cost:12000}},
+  {id:"seasons",name:"Four Seasons",icon:"🍂",color:"#22c55e",cost:220000,luckBonus:0.15,speedBonus:150,shopItem:{name:"Season Compass",boost:0.4,cost:13000}},
+  {id:"ancient",name:"Ancient Civilizations",icon:"🏛️",color:"#d97706",cost:280000,luckBonus:0.15,speedBonus:150,shopItem:{name:"Golden Relic",boost:0.4,cost:14000}},
+  {id:"sound",name:"Sound & Frequency",icon:"🎵",color:"#ec4899",cost:340000,luckBonus:0.15,speedBonus:150,shopItem:{name:"Amp Core",boost:0.4,cost:15000}},
+  {id:"dreams",name:"Dreamscape",icon:"💤",color:"#a78bfa",cost:410000,luckBonus:0.15,speedBonus:150,shopItem:{name:"Dream Catcher",boost:0.4,cost:16000}},
+  {id:"sweet",name:"Sweet Chaos",icon:"🍬",color:"#f472b6",cost:500000,luckBonus:0.15,speedBonus:150,shopItem:{name:"Sugar Crystal",boost:0.4,cost:17000}},
+];
+
+const THEMES={
+  default: {bodyBg:"#05050f",titleGrad:"linear-gradient(135deg,#c7d2fe,#a5b4fc,#818cf8)",titleAnim:"titleGlow 3s ease-in-out infinite",rollBtn:"linear-gradient(135deg,#7c3aed,#6d28d9,#5b21b6)",rollAnim:"rollPulse 2.5s ease-in-out infinite",cardBg:"rgba(255,255,255,0.025)",cardBorder:"rgba(255,255,255,0.065)",statBg:"rgba(255,255,255,0.04)",statBorder:"rgba(255,255,255,0.07)",accent:"#818cf8",muted:"#334155",font:"'Inter',sans-serif",title:"AURA RNG",sub:null},
+  tokyo:   {bodyBg:"#03060f",titleGrad:"linear-gradient(135deg,#e8000d,#ff6b6b,#ffffff,#0072bc)",titleAnim:"titleTokyo 3s ease-in-out infinite",rollBtn:"linear-gradient(135deg,#e8000d,#b80000,#800000)",rollAnim:"rollTokyo 2.5s ease-in-out infinite",cardBg:"rgba(232,0,13,0.05)",cardBorder:"rgba(232,0,13,0.15)",statBg:"rgba(232,0,13,0.07)",statBorder:"rgba(232,0,13,0.2)",accent:"#e8000d",muted:"#4a1010",font:"'Cinzel',serif",title:"東京 AURA RNG",sub:"山手線 · YAMANOTE LINE"},
+  infernal:{bodyBg:"#0f0200",titleGrad:"linear-gradient(135deg,#ff4500,#ff6a00,#ffa500)",titleAnim:"titleInfern 3s ease-in-out infinite",rollBtn:"linear-gradient(135deg,#dc2626,#ea580c,#f97316)",rollAnim:"rollInfern 2s ease-in-out infinite",cardBg:"rgba(255,69,0,0.05)",cardBorder:"rgba(255,69,0,0.14)",statBg:"rgba(255,69,0,0.07)",statBorder:"rgba(255,69,0,0.18)",accent:"#ff4500",muted:"#4a1800",font:"'Inter',sans-serif",title:"AURA RNG",sub:"🔥 HELLFIRE REALM 🔥"},
+  techy:   {bodyBg:"#000d00",titleGrad:"linear-gradient(135deg,#00ff41,#00d4aa,#0088ff)",titleAnim:"titleTechy 3s ease-in-out infinite",rollBtn:"linear-gradient(135deg,#006400,#007a00,#00a000)",rollAnim:"rollTechy 2s ease-in-out infinite",cardBg:"rgba(0,255,65,0.03)",cardBorder:"rgba(0,255,65,0.1)",statBg:"rgba(0,255,65,0.05)",statBorder:"rgba(0,255,65,0.12)",accent:"#00ff41",muted:"#0a2a0a",font:"'Share Tech Mono',monospace",title:"AURA_RNG",sub:"> SYSTEM ONLINE_"},
+};
+
+// ── SVG TRAIN COMPONENTS ──────────────────────────────────────
+// E235-1000 series — Yamanote Line (green stripe, white body, 2-car unit)
+function E235() {
+  const b="#f3f3f3", g="#9ACD32", w="#cde4f8";
+  return (
+    <g>
+      {/* Car 1 */}
+      <rect x="-97" y="-8" width="90" height="16" rx="3" fill={b}/>
+      <rect x="-97" y="-8" width="90" height="3" rx="1.5" fill={g}/>
+      <rect x="-97" y="5" width="90" height="3" rx="1.5" fill={g}/>
+      <rect x="-93" y="-4" width="16" height="6" rx="1.5" fill={w}/>
+      <rect x="-74" y="-4" width="10" height="6" rx="1.5" fill={w}/>
+      <rect x="-61" y="-4" width="10" height="6" rx="1.5" fill={w}/>
+      <rect x="-48" y="-4" width="10" height="6" rx="1.5" fill={w}/>
+      <rect x="-32" y="-4" width="16" height="6" rx="1.5" fill={w}/>
+      <line x1="-76" y1="-8" x2="-76" y2="8" stroke="#d0d0d0" strokeWidth="0.7"/>
+      <line x1="-50" y1="-8" x2="-50" y2="8" stroke="#d0d0d0" strokeWidth="0.7"/>
+      {/* Coupler */}
+      <rect x="-8" y="-2.5" width="14" height="5" rx="1.5" fill="#b0b0b0"/>
+      {/* Car 2 */}
+      <rect x="7" y="-8" width="90" height="16" rx="3" fill={b}/>
+      <rect x="7" y="-8" width="90" height="3" rx="1.5" fill={g}/>
+      <rect x="7" y="5" width="90" height="3" rx="1.5" fill={g}/>
+      <rect x="10" y="-4" width="16" height="6" rx="1.5" fill={w}/>
+      <rect x="29" y="-4" width="10" height="6" rx="1.5" fill={w}/>
+      <rect x="42" y="-4" width="10" height="6" rx="1.5" fill={w}/>
+      <rect x="55" y="-4" width="10" height="6" rx="1.5" fill={w}/>
+      <rect x="70" y="-4" width="16" height="6" rx="1.5" fill={w}/>
+      <line x1="27" y1="-8" x2="27" y2="8" stroke="#d0d0d0" strokeWidth="0.7"/>
+      <line x1="53" y1="-8" x2="53" y2="8" stroke="#d0d0d0" strokeWidth="0.7"/>
+    </g>
+  );
+}
+
+// E233-0 series — Chuo Line Rapid (orange stripe)
+// E233-1000 series — Keihin-Tohoku (blue stripe)
+// Both use same E233 body shape with different stripe color
+function E233({stripe}) {
+  const b="#f3f3f3", w="#cde4f8";
+  return (
+    <g>
+      {/* Car 1 */}
+      <rect x="-92" y="-7" width="86" height="14" rx="2.5" fill={b}/>
+      <rect x="-92" y="-7" width="86" height="2.5" rx="1" fill={stripe}/>
+      <rect x="-92" y="4.5" width="86" height="2.5" rx="1" fill={stripe}/>
+      <rect x="-89" y="-4" width="15" height="5" rx="1.5" fill={w}/>
+      <rect x="-71" y="-4" width="10" height="5" rx="1.5" fill={w}/>
+      <rect x="-58" y="-4" width="10" height="5" rx="1.5" fill={w}/>
+      <rect x="-45" y="-4" width="10" height="5" rx="1.5" fill={w}/>
+      <rect x="-30" y="-4" width="15" height="5" rx="1.5" fill={w}/>
+      <line x1="-72" y1="-7" x2="-72" y2="7" stroke="#d0d0d0" strokeWidth="0.7"/>
+      <line x1="-46" y1="-7" x2="-46" y2="7" stroke="#d0d0d0" strokeWidth="0.7"/>
+      {/* Coupler */}
+      <rect x="-7" y="-2" width="12" height="4" rx="1.5" fill="#b0b0b0"/>
+      {/* Car 2 */}
+      <rect x="5" y="-7" width="86" height="14" rx="2.5" fill={b}/>
+      <rect x="5" y="-7" width="86" height="2.5" rx="1" fill={stripe}/>
+      <rect x="5" y="4.5" width="86" height="2.5" rx="1" fill={stripe}/>
+      <rect x="8" y="-4" width="15" height="5" rx="1.5" fill={w}/>
+      <rect x="26" y="-4" width="10" height="5" rx="1.5" fill={w}/>
+      <rect x="39" y="-4" width="10" height="5" rx="1.5" fill={w}/>
+      <rect x="52" y="-4" width="10" height="5" rx="1.5" fill={w}/>
+      <rect x="67" y="-4" width="15" height="5" rx="1.5" fill={w}/>
+      <line x1="24" y1="-7" x2="24" y2="7" stroke="#d0d0d0" strokeWidth="0.7"/>
+      <line x1="50" y1="-7" x2="50" y2="7" stroke="#d0d0d0" strokeWidth="0.7"/>
+    </g>
+  );
+}
+
+// ── TOKYO BACKGROUND ─────────────────────────────────────────
+const YAM_PATH="M 500,78 C 760,78 882,192 882,350 C 882,508 760,622 500,622 C 240,622 118,508 118,350 C 118,192 240,78 500,78 Z";
+const FIRE_PARTS=[...Array(16)].map((_,i)=>({l:`${8+(i*34)%84}%`,s:10+(i*7)%14,dur:`${1.2+(i*0.18)%1.4}s`,dl:`${(i*0.14)%1.6}s`}));
+const MATRIX_COLS=[...Array(12)].map((_,i)=>({l:`${4+(i*8)}%`,dl:`${(i*0.2)%1.8}s`,dur:`${1.5+(i*0.15)%1.5}s`}));
+
+function TokyoBg(){
+  return(
+    <div style={{position:"fixed",inset:0,zIndex:0,pointerEvents:"none",overflow:"hidden"}}>
+      <svg style={{position:"absolute",width:"100%",height:"100%"}} viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          {/* Yamanote loop */}
+          <path id="yamPath" d={YAM_PATH}/>
+          {/* Chuo Rapid — Tokyo→Takao (east to west, trains go left→right = west) */}
+          <path id="chuoPath" d="M -120,268 L 1120,268"/>
+          {/* Chuo-Sobu local — parallel, slight offset */}
+          <path id="sobuPath" d="M 1120,298 L -120,298"/>
+          {/* Keihin-Tohoku — runs south (Tokyo→Yokohama), visually right→left */}
+          <path id="keihinPath" d="M 1120,415 L -120,415"/>
+        </defs>
+
+        {/* ── TRACK LINES ── */}
+        <path d={YAM_PATH} fill="none" stroke="#9ACD32" strokeWidth="1.8" opacity="0.2"/>
+        <line x1="0" y1="268" x2="1000" y2="268" stroke="#F37321" strokeWidth="1.5" opacity="0.18"/>
+        <line x1="0" y1="298" x2="1000" y2="298" stroke="#FFD400" strokeWidth="1.2" opacity="0.12" strokeDasharray="7 5"/>
+        <line x1="0" y1="415" x2="1000" y2="415" stroke="#00A7DB" strokeWidth="1.5" opacity="0.18"/>
+        {/* Other lines (Marunouchi, Hanzomon) */}
+        <line x1="275" y1="0" x2="725" y2="700" stroke="#E60012" strokeWidth="0.9" opacity="0.09"/>
+        <line x1="500" y1="0" x2="500" y2="700" stroke="#8F76D6" strokeWidth="0.9" opacity="0.08"/>
+
+        {/* ── YAMANOTE STATION DOTS (30 stations) ── */}
+        {[...Array(30)].map((_,i)=>{
+          const a=(i/30)*Math.PI*2-Math.PI/2;
+          return <circle key={i} cx={500+382*Math.cos(a)} cy={350+272*Math.sin(a)} r="3" fill="#9ACD32" opacity="0.42"/>;
+        })}
+
+        {/* ── CHUO STATION DOTS ── */}
+        {[70,195,320,445,560,675,790,905].map((x,i)=>(
+          <circle key={i} cx={x} cy={268} r="2.5" fill="#F37321" opacity="0.38"/>
+        ))}
+
+        {/* ── KEIHIN-TOHOKU STATION DOTS ── */}
+        {[75,210,345,480,615,750,885].map((x,i)=>(
+          <circle key={i} cx={x} cy={415} r="2.5" fill="#00A7DB" opacity="0.38"/>
+        ))}
+
+        {/* ── STATION NAME LABELS ── */}
+        {/* Yamanote major stops */}
+        <text x="102" y="347" fill="#9ACD32" fontSize="11" opacity="0.5" fontFamily="sans-serif" textAnchor="end">新宿</text>
+        <text x="200" y="600" fill="#9ACD32" fontSize="10" opacity="0.42" fontFamily="sans-serif" textAnchor="middle">渋谷</text>
+        <text x="500" y="642" fill="#9ACD32" fontSize="10" opacity="0.38" fontFamily="sans-serif" textAnchor="middle">大崎</text>
+        <text x="800" y="600" fill="#9ACD32" fontSize="10" opacity="0.42" fontFamily="sans-serif" textAnchor="middle">品川</text>
+        <text x="898" y="347" fill="#9ACD32" fontSize="11" opacity="0.5" fontFamily="sans-serif" textAnchor="start">東京</text>
+        <text x="800" y="108" fill="#9ACD32" fontSize="10" opacity="0.42" fontFamily="sans-serif" textAnchor="middle">上野</text>
+        <text x="500" y="60" fill="#9ACD32" fontSize="10" opacity="0.38" fontFamily="sans-serif" textAnchor="middle">田端</text>
+        <text x="200" y="108" fill="#9ACD32" fontSize="10" opacity="0.42" fontFamily="sans-serif" textAnchor="middle">池袋</text>
+        {/* Line labels */}
+        <text x="14" y="262" fill="#F37321" fontSize="8" opacity="0.4" fontFamily="sans-serif">中央線</text>
+        <text x="14" y="410" fill="#00A7DB" fontSize="8" opacity="0.4" fontFamily="sans-serif">京浜東北</text>
+        {/* Line name: Chuo direction labels */}
+        <text x="980" y="263" fill="#F37321" fontSize="7.5" opacity="0.35" fontFamily="sans-serif" textAnchor="end">→高尾</text>
+        <text x="20" y="293" fill="#FFD400" fontSize="7.5" opacity="0.3" fontFamily="sans-serif">←千葉</text>
+        <text x="980" y="410" fill="#00A7DB" fontSize="7.5" opacity="0.35" fontFamily="sans-serif" textAnchor="end">←横浜</text>
+
+        {/* ── ANIMATED TRAINS ── */}
+
+        {/* Yamanote E235 — train 1 */}
+        <g opacity="0.75">
+          <animateMotion dur="40s" repeatCount="indefinite" rotate="auto">
+            <mpath href="#yamPath"/>
+          </animateMotion>
+          <E235/>
+        </g>
+        {/* Yamanote E235 — train 2 */}
+        <g opacity="0.58">
+          <animateMotion dur="40s" begin="-20s" repeatCount="indefinite" rotate="auto">
+            <mpath href="#yamPath"/>
+          </animateMotion>
+          <E235/>
+        </g>
+        {/* Yamanote E235 — train 3 */}
+        <g opacity="0.42">
+          <animateMotion dur="40s" begin="-13s" repeatCount="indefinite" rotate="auto">
+            <mpath href="#yamPath"/>
+          </animateMotion>
+          <E235/>
+        </g>
+
+        {/* Chuo Rapid E233-0 — train 1 (going east →) */}
+        <g opacity="0.68">
+          <animateMotion dur="14s" repeatCount="indefinite" rotate="auto">
+            <mpath href="#chuoPath"/>
+          </animateMotion>
+          <E233 stripe="#F37321"/>
+        </g>
+        {/* Chuo Rapid E233-0 — train 2 */}
+        <g opacity="0.5">
+          <animateMotion dur="14s" begin="-7s" repeatCount="indefinite" rotate="auto">
+            <mpath href="#chuoPath"/>
+          </animateMotion>
+          <E233 stripe="#F37321"/>
+        </g>
+        {/* Chuo-Sobu local E231 (yellow, going west ←) */}
+        <g opacity="0.38">
+          <animateMotion dur="18s" repeatCount="indefinite" rotate="auto">
+            <mpath href="#sobuPath"/>
+          </animateMotion>
+          <E233 stripe="#FFD400"/>
+        </g>
+
+        {/* Keihin-Tohoku E233-1000 — train 1 (going west ←) */}
+        <g opacity="0.62">
+          <animateMotion dur="17s" repeatCount="indefinite" rotate="auto">
+            <mpath href="#keihinPath"/>
+          </animateMotion>
+          <E233 stripe="#00A7DB"/>
+        </g>
+        {/* Keihin-Tohoku E233-1000 — train 2 */}
+        <g opacity="0.46">
+          <animateMotion dur="17s" begin="-8.5s" repeatCount="indefinite" rotate="auto">
+            <mpath href="#keihinPath"/>
+          </animateMotion>
+          <E233 stripe="#00A7DB"/>
+        </g>
+      </svg>
+      <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 0%,rgba(232,0,13,.06),transparent 55%)"}}/>
+    </div>
+  );
+}
+
+function InfernalBg(){
+  return(
+    <div style={{position:"fixed",inset:0,zIndex:0,pointerEvents:"none",overflow:"hidden"}}>
+      <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 100%,rgba(255,69,0,.18),transparent 65%)"}}/>
+      <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 20% 90%,rgba(220,38,38,.1),transparent 50%)"}}/>
+      {FIRE_PARTS.map((p,i)=><div key={i} style={{position:"absolute",left:p.l,bottom:0,width:`${p.s}px`,height:`${p.s*2}px`,borderRadius:"50% 50% 30% 30%",background:"radial-gradient(ellipse,#ff4500,transparent)",opacity:.3,animation:`fireDrift ${p.dur} ease-out ${p.dl} infinite`}}/>)}
+    </div>
+  );
+}
+
+function TechyBg(){
+  return(
+    <div style={{position:"fixed",inset:0,zIndex:0,pointerEvents:"none",overflow:"hidden"}}>
+      <div style={{position:"absolute",inset:0,backgroundImage:"linear-gradient(rgba(0,255,65,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,65,.05) 1px,transparent 1px)",backgroundSize:"40px 40px"}}/>
+      <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.12) 3px,rgba(0,0,0,.12) 4px)"}}/>
+      <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 0%,rgba(0,255,65,.07),transparent 55%)"}}/>
+      {MATRIX_COLS.map((col,i)=><div key={i} style={{position:"absolute",left:col.l,top:0,color:"#00ff41",fontSize:"10px",fontFamily:"'Share Tech Mono',monospace",opacity:.15,animation:`matrixFall ${col.dur} linear ${col.dl} infinite`}}>01</div>)}
+    </div>
+  );
+}
+
+// ── BIRTHDAY COMPONENTS ───────────────────────────────────────
+const BDAY_CONFETTI=[...Array(40)].map((_,i)=>({
+  l:`${(i*37)%96}%`, d:`${1.8+(i*0.22)%2.5}s`, dl:`${(i*0.19)%4}s`,
+  c:["#ff006e","#fbbf24","#4ade80","#60a5fa","#c084fc","#f97316","#ec4899","#34d399"][i%8],
+  s:4+(i*3)%9, cr:(i*47)%720,
+}));
+const BDAY_BALLOONS=[...Array(12)].map((_,i)=>({
+  l:`${6+(i*18)%88}%`, dur:`${5+(i*0.8)%4}s`, dl:`${(i*0.6)%5}s`,
+  e:["🎈","🎈","🎈","🎀","🎊"][i%5],
+}));
+const BDAY_FW=[...Array(8)].map((_,i)=>({
+  l:`${10+(i*22)%78}%`, t:`${10+(i*17)%50}%`,
+  dur:`${1.2+(i*0.3)%1.2}s`, dl:`${(i*0.4)%3}s`,
+  c:["#ff006e","#fbbf24","#4ade80","#60a5fa","#c084fc","#f97316"][i%6],
+}));
+
+function BirthdayBg(){
+  return(
+    <div style={{position:"fixed",inset:0,zIndex:0,pointerEvents:"none",overflow:"hidden"}}>
+      {/* Deep party background */}
+      <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 30% 20%,rgba(236,72,153,.07),transparent 50%)"}}/>
+      <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 70% 80%,rgba(251,191,36,.06),transparent 50%)"}}/>
+      <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 50%,rgba(192,132,252,.04),transparent 60%)"}}/>
+      {/* Confetti falling */}
+      {BDAY_CONFETTI.map((c,i)=>(
+        <div key={i} style={{position:"absolute",left:c.l,top:"-12px",width:`${c.s}px`,height:`${c.s*.6}px`,
+          background:c.c,borderRadius:i%3===0?"50%":"2px",
+          animation:`confettiFall ${c.d} linear ${c.dl} infinite`,"--cr":`${c.cr}deg`,opacity:.88}}/>
+      ))}
+      {/* Balloons rising */}
+      {BDAY_BALLOONS.map((b,i)=>(
+        <div key={i} style={{position:"absolute",left:b.l,bottom:"-30px",fontSize:"22px",
+          animation:`balloonRise ${b.dur} ease-in-out ${b.dl} infinite`}}>{b.e}</div>
+      ))}
+      {/* Firework bursts */}
+      {BDAY_FW.map((fw,i)=>(
+        <div key={i} style={{position:"absolute",left:fw.l,top:fw.t}}>
+          {[...Array(8)].map((_,j)=>(
+            <div key={j} style={{position:"absolute",width:"4px",height:"4px",borderRadius:"50%",
+              background:fw.c,boxShadow:`0 0 4px ${fw.c}`,
+              animation:`fireworkOut ${fw.dur} ease-out ${fw.dl+(j*.1)}s infinite`,
+              "--fx":`${Math.cos(j/8*Math.PI*2)*35}px`,"--fy":`${Math.sin(j/8*Math.PI*2)*35}px`}}/>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TopBanner(){
+  return(
+    <div style={{position:"fixed",top:0,left:0,right:0,zIndex:1000,
+      background:"linear-gradient(90deg,#7c2d8e,#ec4899,#f97316,#fbbf24,#4ade80,#60a5fa,#ec4899,#7c2d8e)",
+      backgroundSize:"300% 100%",padding:"9px 16px",textAlign:"center",
+      fontSize:"12px",fontWeight:700,color:"#fff",letterSpacing:"3px",
+      fontFamily:"'Cinzel',serif",textShadow:"0 0 10px rgba(0,0,0,.4)",
+      animation:"bannerShimmer 4s linear infinite",
+      boxShadow:"0 2px 20px rgba(236,72,153,.5)"}}>
+      🎂 HAPPY BIRTHDAY FINN — JUNE 7TH 🎂
+    </div>
+  );
+}
+
+function BottomBanner(){
+  return(
+    <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:1000,
+      background:"linear-gradient(90deg,#fbbf24,#ec4899,#60a5fa,#4ade80,#f97316,#c084fc,#fbbf24)",
+      backgroundSize:"300% 100%",padding:"9px 16px",textAlign:"center",
+      fontSize:"12px",fontWeight:700,color:"#fff",letterSpacing:"4px",
+      fontFamily:"'Cinzel',serif",textShadow:"0 0 10px rgba(0,0,0,.4)",
+      animation:"bannerShimmer 4s linear infinite reverse",
+      boxShadow:"0 -2px 20px rgba(251,191,36,.5)"}}>
+      🎉 BIRTHDAY TIME! 🎉
+    </div>
+  );
+}
+
+// Pre-computed particles
+const PARTS=[...Array(28)].map((_,i)=>({l:`${5+(i*37)%87}%`,t:`${8+(i*53)%80}%`,s:2+(i*3)%4,dur:`${2.5+(i*0.37)%2.5}s`,dl:`${(i*0.18)%3.5}s`}));
+
+// ═══════════════════════════════════════════════════════════
+// FX HELPER PRIMITIVES — shared building blocks, parameterized
+// per aura so results stay visually distinct while keeping
+// code size sane across 230+ auras.
+// ═══════════════════════════════════════════════════════════
+const mk=(n,s)=>[...Array(n)].map((_,i)=>({l:`${5+(i*s)%88}%`,t:`${5+(i*(s+23))%86}%`,d:`${0.8+(i*0.15)%2}s`,dl:`${(i*0.13)%3}s`}));
+const P3=mk(3,71),P4=mk(4,61),P5=mk(5,59),P6=mk(6,67),P8=mk(8,53),P10=mk(10,43),P12=mk(12,37),P15=mk(15,31),P18=mk(18,29),P20=mk(20,23);
+const AI={position:"absolute",inset:0,overflow:"hidden"};
+const CC={...AI,display:"flex",alignItems:"center",justifyContent:"center"};
+
+function FxRain({c1,c2,bg1,bg2,shape,arr=P15}){
+  const bg=bg1&&bg2?`linear-gradient(180deg,${bg1},${bg2})`:`linear-gradient(180deg,${c1}22,${c2}33)`;
+  return(<div style={{...AI,background:bg}}>{arr.map((p,i)=><div key={i} style={{position:"absolute",left:p.l,top:"-14px",width:`${3+(i*2)%7}px`,height:`${8+(i*4)%13}px`,background:`linear-gradient(180deg,${c1},${c2})`,borderRadius:shape||"50% 50% 50% 50%/40% 40% 60% 60%",animation:`pFall ${p.d} linear ${p.dl} infinite`,opacity:.85}}/>)}</div>);
+}
+function FxRise({c1,c2,bg,arr=P15}){
+  return(<div style={{...AI,background:bg||`${c2}18`}}>{arr.map((p,i)=><div key={i} style={{position:"absolute",left:`${6+(i*29)%86}%`,bottom:0,width:`${8+(i*7)%18}px`,height:`${16+(i*11)%32}px`,background:`radial-gradient(ellipse at 50% 90%,${c1},${c2},transparent)`,borderRadius:"50% 50% 30% 30%",animation:`pRise ${.6+(i*.08)%.8}s ease-out ${(i*.07)%1.2}s infinite`,filter:"blur(1px)"}}/>)}</div>);
+}
+function FxEmber({c1,c2,bg2,arr=P18}){
+  return(<div style={{...AI,background:bg2||`${c2}18`}}>{arr.map((p,i)=><div key={i} style={{position:"absolute",left:`${8+(i*31)%82}%`,bottom:"5%",width:`${4+(i*3)%9}px`,height:`${4+(i*3)%9}px`,borderRadius:"50%",background:`radial-gradient(circle,${c1},${c2})`,boxShadow:`0 0 6px ${c2}`,animation:`pRiseX ${p.d} ease-out ${p.dl} infinite`,"--dx":`${(i%2?1:-1)*(5+(i*7)%15)}px`}}/>)}</div>);
+}
+function FxTwinkle({colors,bg="rgba(2,2,10,.9)",arr=P20}){
+  return(<div style={{...AI,background:bg}}>{arr.map((p,i)=><div key={i} style={{position:"absolute",left:p.l,top:p.t,width:`${2+(i%3)}px`,height:`${2+(i%3)}px`,borderRadius:"50%",background:colors[i%colors.length],boxShadow:`0 0 4px ${colors[i%colors.length]}`,animation:`pTwink ${p.d} ease-in-out ${p.dl} infinite`}}/>)}</div>);
+}
+function FxVortex({c1,c2,bg="#000",arr=P15}){
+  return(<div style={{...CC,background:bg}}>{arr.map((p,i)=><div key={i} style={{position:"absolute",width:`${3+(i*2)%6}px`,height:`${3+(i*2)%6}px`,borderRadius:"50%",background:i%2?c1:c2,animation:`pVortex ${p.d} linear ${p.dl} infinite`,"--vr":`${20+(i*8)%45}px`}}/>)}<div style={{width:"6px",height:"6px",borderRadius:"50%",background:c1,boxShadow:`0 0 10px ${c1}`}}/></div>);
+}
+function FxBeam({c,n=8,bg="rgba(5,5,15,.8)"}){
+  return(<div style={{...CC,background:bg}}>{[...Array(n)].map((_,i)=><div key={i} style={{position:"absolute",width:"2px",height:`${30+(i*4)%20}px`,background:`linear-gradient(0deg,transparent,${c},transparent)`,transformOrigin:"50% 100%",transform:`rotate(${i*(360/n)}deg) translateY(-25px)`,animation:`pBeam ${1.2+(i*.1)%1}s ease-in-out ${(i*.12)%1.5}s infinite`}}/>)}<div style={{width:"9px",height:"9px",borderRadius:"50%",background:c,boxShadow:`0 0 12px ${c}`}}/></div>);
+}
+function FxWave({c,n=4,bg="rgba(3,5,15,.85)"}){
+  return(<div style={{...AI,background:bg}}>{[...Array(n)].map((_,i)=><div key={i} style={{position:"absolute",left:"-5%",right:"-5%",height:`${8+(i*3)}px`,top:`${15+(i*(70/n))}%`,background:`linear-gradient(90deg,transparent,${c}40,transparent)`,animation:`pWave ${1+(i*.3)}s ease-in-out ${i*.2}s infinite`,"--wy":`${-(4+(i*3))}px`}}/>)}</div>);
+}
+function FxGlitch({colors,bg="#000",arr=P18}){
+  return(<div style={{...AI,background:bg,animation:"pGlitch .4s steps(4) infinite"}}>{arr.map((p,i)=><div key={i} style={{position:"absolute",left:p.l,top:p.t,width:`${2+(i%4)}px`,height:`${8+(i*3)%20}px`,background:colors[i%colors.length],animation:`pScan ${.3+(i*.05)%.4}s linear ${(i*.05)%.5}s infinite`}}/>)}</div>);
+}
+function FxRune({c,chars,bg="#000",arr=P12}){
+  return(<div style={{...AI,background:bg}}>{arr.map((p,i)=><div key={i} style={{position:"absolute",left:p.l,top:p.t,color:c,fontSize:`${10+(i*3)%12}px`,fontFamily:"serif",animation:`pRune ${p.d} ease-in-out ${p.dl} infinite`}}>{chars[i%chars.length]}</div>)}</div>);
+}
+function FxFloat({c,bg,shape="50%",arr=P10}){
+  return(<div style={{...AI,background:bg||`${c}12`}}>{arr.map((p,i)=><div key={i} style={{position:"absolute",left:p.l,top:p.t,width:`${8+(i*5)%16}px`,height:`${6+(i*4)%13}px`,background:c,borderRadius:shape,animation:`pFloat ${p.d} ease-in-out ${p.dl} infinite`,"--fy":"-10px","--r0":"0deg","--r1":"8deg"}}/>)}</div>);
+}
+function FxBurst({colors,bg="#000"}){
+  return(<div style={{...CC,background:bg}}>{colors.map((c,i)=>[...Array(3)].map((_,j)=><div key={`${i}-${j}`} style={{position:"absolute",width:`${3+j*2}px`,height:`${3+j*2}px`,borderRadius:"50%",background:c,boxShadow:`0 0 5px ${c}`,animation:`pBurst ${.6+j*.15}s ease-out ${i*.1}s infinite`,"--bx":`${Math.cos(i/colors.length*6.28)*(15+j*15)}px`,"--by":`${Math.sin(i/colors.length*6.28)*(15+j*15)}px`}}/>))}<div style={{width:"7px",height:"7px",borderRadius:"50%",background:"#fff",boxShadow:`0 0 10px ${colors[0]}`}}/></div>);
+}
+function FxRing({c,n=5,bg="rgba(3,3,15,.85)"}){
+  return(<div style={{...CC,background:bg}}>{[...Array(n)].map((_,i)=><div key={i} style={{position:"absolute",width:`${18+i*18}px`,height:`${18+i*18}px`,border:`1px solid ${c}`,borderRadius:"50%",animation:`pPulse ${1+(i*.3)}s ease-out ${i*.3}s infinite`}}/>)}</div>);
+}
+function FxDrift({c,bg="rgba(5,8,20,.7)",arr=P15}){
+  return(<div style={{...AI,background:bg}}>{arr.map((p,i)=><div key={i} style={{position:"absolute",top:p.t,left:"-25%",width:`${40+(i*18)%65}px`,height:"1px",background:`linear-gradient(90deg,transparent,${c},transparent)`,animation:`pDrift ${p.d} linear ${p.dl} infinite`}}/>)}</div>);
+}
+function FxSpin({colors,bg="rgba(8,8,20,.85)"}){
+  return(<div style={{...CC,background:bg}}>{colors.map((c,i)=><div key={i} style={{position:"absolute",width:`${50-(i*10)}px`,height:`${50-(i*10)}px`,border:`1px solid ${c}`,borderRadius:i%2?"50%":"14%",animation:`${i%2?"pSpin":"pSpinR"} ${3+(i*1.2)}s linear infinite`}}/>)}<div style={{width:"7px",height:"7px",borderRadius:"50%",background:colors[0],boxShadow:`0 0 8px ${colors[0]}`}}/></div>);
+}
+function FxSplit({c1,c2}){
+  return(<div style={{...AI,display:"flex"}}><div style={{flex:1,background:`linear-gradient(135deg,${c1}55,${c1}15)`}}/><div style={{flex:1,background:`linear-gradient(315deg,${c2}55,${c2}15)`}}/><div style={{position:"absolute",inset:0,background:`linear-gradient(90deg,transparent 48%,#fff8 50%,transparent 52%)`}}/></div>);
+}
+function FxGlitchText({chars,c}){
+  return(<div style={{...AI,background:"rgba(0,5,0,.95)"}}>{P18.map((p,i)=><div key={i} style={{position:"absolute",left:p.l,top:"-10px",color:c,fontSize:"9px",fontFamily:"'Share Tech Mono',monospace",animation:`pScan ${.8+(i*.08)%.7}s linear ${p.dl} infinite`}}>{chars[i%chars.length]}</div>)}</div>);
+}
+
+// ── Custom bespoke effects (shared across a few themed auras via params) ──
+function FxTentacle({c,big}){
+  const n=big?7:5;
+  return(<div style={{...AI,background:"rgba(0,2,10,1)"}}>{[...Array(n)].map((_,i)=><svg key={i} style={{position:"absolute",left:`${5+(i*(85/n))}%`,bottom:0,opacity:.55+(i*.03),animation:`pFloat ${1.2+(i*.25)%1.5}s ease-in-out ${(i*.2)%1.5}s infinite`,"--fy":"-6px","--r0":"0deg","--r1":`${(i%2?1:-1)*6}deg`}} width="16" height={big?"100":"80"} viewBox="0 0 16 100"><path d={`M8,100 Q${4+(i%2?6:-6)},70 8,45 Q${4+(i%2?-6:6)},22 ${6+(i%2?7:3)},0`} fill="none" stroke={c} strokeWidth="2.5" opacity=".7"/></svg>)}</div>);
+}
+function FxEye({multi,dark}){
+  const n=multi?4:1;
+  return(<div style={{...CC,background:dark?"rgba(0,0,0,1)":"rgba(5,2,15,.92)"}}>{[...Array(n)].map((_,i)=><div key={i} style={{position:"absolute",left:multi?`${20+(i*20)}%`:"50%",top:multi?`${25+(i%2)*40}%`:"50%",transform:"translate(-50%,-50%)",width:multi?"18px":"34px",height:multi?"10px":"18px",background:"radial-gradient(ellipse,#fff,#e2e8f0)",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",animation:`pTwink ${2+(i*.3)}s ease-in-out ${i*.3}s infinite`}}><div style={{width:multi?"6px":"11px",height:multi?"6px":"11px",borderRadius:"50%",background:"#1e1b4b"}}/></div>)}</div>);
+}
+function FxTentacleOld({c}){
+  return(<div style={{...AI,background:"rgba(0,5,15,1)"}}>{[...Array(5)].map((_,i)=><svg key={i} style={{position:"absolute",left:`${5+(i*20)}%`,bottom:0,opacity:.6,animation:`pRise ${1.5+(i*.3)}s ease-in-out ${(i*.25)%1.5}s infinite`}} width="20" height="100" viewBox="0 0 20 100"><path d={`M10,100 Q${5+(i%2?8:-8)},70 10,50 Q${5+(i%2?-8:8)},30 10,10 Q${5+(i%2?5:-5)},0 ${5+(i%2?15:5)},0`} fill="none" stroke={c} strokeWidth="2" opacity=".4"/></svg>)}</div>);
+}
+
+// ── One-off bespoke effects (each used by 1-2 specific auras) ──
+function FxThorn(){return(<div style={{...AI,background:"rgba(3,18,3,.9)"}}>{[...Array(10)].map((_,i)=><div key={i} style={{position:"absolute",left:`${6+(i*36)%87}%`,bottom:`${(i%3)*28}%`,width:0,height:0,borderLeft:`${3+(i*2)%5}px solid transparent`,borderRight:`${3+(i*2)%5}px solid transparent`,borderBottom:`${22+(i*18)%55}px solid rgba(34,${55+(i*10)%35},34,.72)`}}/>)}</div>);}
+function FxThunder(){return(<div style={{...AI,background:"linear-gradient(180deg,rgba(5,5,30,.8),rgba(15,10,40,.95))"}}>{[...Array(6)].map((_,i)=><svg key={i} style={{position:"absolute",left:`${8+(i*37)%80}%`,top:`${5+(i*29)%40}%`,animation:`pArc ${.5+(i*.08)%.6}s steps(1) ${(i*.18)%1.5}s infinite`}} width="12" height="50" viewBox="0 0 12 50"><polyline points="6,0 2,25 8,25 4,50" fill="none" stroke="#fde047" strokeWidth="2"/></svg>)}</div>);}
+function FxShadow(){return(<div style={{...AI,background:"rgba(2,2,8,1)"}}>{P10.map((p,i)=><div key={i} style={{position:"absolute",left:`${(i*37)%85}%`,bottom:0,width:`${2+(i*2)%5}px`,height:`${30+(i*15)%60}px`,background:"linear-gradient(0deg,rgba(30,30,60,.5),transparent)",animation:`pRise ${p.d} ease-in-out ${p.dl} infinite`,filter:"blur(2px)"}}/>)}</div>);}
+function FxAurora(){const c=["#22d3ee","#4ade80","#818cf8","#e879f9","#fbbf24"];return(<div style={{...AI,background:"rgba(2,8,20,.8)"}}>{c.map((col,i)=><div key={i} style={{position:"absolute",left:`${8+(i*18)}%`,top:0,width:`${12+(i*4)%20}px`,height:"100%",background:`linear-gradient(180deg,transparent,${col}30,${col}50,transparent)`,filter:"blur(6px)",animation:`pAurora ${2+(i*.6)}s ease-in-out ${i*.4}s infinite`}}/>)}</div>);}
+function FxVine(){return(<div style={{...AI,background:"rgba(2,15,4,.9)"}}>{[...Array(5)].map((_,i)=><svg key={i} style={{position:"absolute",left:`${5+(i*20)}%`,bottom:0,opacity:.7}} width="20" height="130" viewBox="0 0 20 130"><path d={`M10,130 Q${5+(i%2?8:-8)},90 10,70 Q${5+(i%2?-8:8)},50 10,30 Q${5+(i%2?8:-8)},10 10,0`} fill="none" stroke={`hsl(${120+(i*15)%40},55%,30%)`} strokeWidth="2"/></svg>)}</div>);}
+function FxQuartz(){const c=["#c084fc","#60a5fa","#34d399","#fbbf24"];return(<div style={{...CC,background:"rgba(8,5,20,.85)"}}>{c.map((col,i)=><div key={i} style={{position:"absolute",width:`${20+(i*8)}px`,height:"100%",background:`linear-gradient(${i*36}deg,transparent,${col}20,${col}35,transparent)`,animation:`pAurora ${2.5+(i*.4)}s ease-in-out ${i*.3}s infinite`}}/>)}</div>);}
+function FxTornado(){return(<div style={{...CC,background:"rgba(20,0,0,1)"}}>{[...Array(3)].map((_,i)=><div key={i} style={{position:"absolute",width:`${70-(i*20)}px`,height:"100%",background:`conic-gradient(from ${i*60}deg,transparent,rgba(239,68,68,.3),transparent)`,animation:`pSpin ${1.5+(i*.5)}s linear infinite`}}/>)}</div>);}
+function FxBlackhole(){return(<div style={{...CC,background:"#000"}}>{P15.map((p,i)=><div key={i} style={{position:"absolute",width:`${3+(i*2)%6}px`,height:`${3+(i*2)%6}px`,borderRadius:"50%",background:"#818cf8",animation:`pVortex ${p.d} linear ${p.dl} infinite`,"--vr":`${30+(i*10)%50}px`}}/>)}<div style={{width:"12px",height:"12px",borderRadius:"50%",background:"#000",boxShadow:"0 0 0 2px rgba(99,102,241,.6),0 0 20px rgba(99,102,241,.4)"}}/></div>);}
+function FxClock(){return(<div style={{...CC,background:"rgba(5,2,15,.9)"}}>{[...Array(2)].map((_,i)=><div key={i} style={{position:"absolute",width:`${45+(i*25)}px`,height:`${45+(i*25)}px`,border:"1px solid rgba(251,191,36,.35)",borderRadius:"50%",animation:`${i%2?"pSpin":"pSpinR"} ${3+(i*2)}s linear infinite`}}/>)}<div style={{width:"10px",height:"10px",borderRadius:"50%",background:"#fbbf24",boxShadow:"0 0 15px #fbbf24"}}/></div>);}
+function FxSingularity(){return(<div style={{...CC,background:"rgba(2,0,8,1)"}}>{P15.map((p,i)=><div key={i} style={{position:"absolute",width:`${4+(i*2)%7}px`,height:`${4+(i*2)%7}px`,borderRadius:"50%",background:"#a78bfa",animation:`pVortex ${p.d} ease-in ${p.dl} infinite`,"--vr":`${25+(i*9)%50}px`}}/>)}<div style={{width:"6px",height:"6px",borderRadius:"50%",background:"#fff",boxShadow:"0 0 10px #a78bfa,0 0 25px #7c3aed"}}/></div>);}
+function FxParadox(){return(<div style={{...CC,background:"rgba(5,2,15,.9)"}}>{[...Array(4)].map((_,i)=><div key={i} style={{position:"absolute",width:`${15+(i*12)}px`,height:`${15+(i*12)}px`,border:"1px solid rgba(248,113,113,.4)",borderRadius:"50%",animation:`pSpin ${2+(i*.5)}s linear infinite`}}/>)}{[...Array(4)].map((_,i)=><div key={i+9} style={{position:"absolute",width:`${15+(i*12)}px`,height:`${15+(i*12)}px`,border:"1px solid rgba(96,165,250,.4)",borderRadius:"12%",animation:`pSpinR ${2+(i*.5)}s linear infinite`}}/>)}</div>);}
+function FxInfinity(){return(<div style={{...CC,background:"rgba(8,5,20,.85)"}}>{[...Array(16)].map((_,i)=>{const t=i/16*6.28;return(<div key={i} style={{position:"absolute",width:"4px",height:"4px",borderRadius:"50%",background:`hsl(${240+(i*15)}deg,80%,65%)`,left:`calc(50% + ${Math.cos(t)*45}px)`,top:`calc(50% + ${Math.sin(2*t)*22}px)`,animation:`pTwink ${.8+(i*.04)%.6}s ease-in-out ${i*.06}s infinite`}}/>)})}</div>);}
+function FxGalaxy(){const c=["#818cf8","#c084fc","#60a5fa","#fbbf24"];return(<div style={{...CC,background:"rgba(2,2,8,1)"}}>{P18.map((p,i)=>{const a=(i/18)*6.28*3;return(<div key={i} style={{position:"absolute",width:"2px",height:"2px",borderRadius:"50%",left:`calc(50% + ${Math.cos(a)*(10+i*3)}px)`,top:`calc(50% + ${Math.sin(a)*(10+i*3)*.6}px)`,background:c[i%c.length],animation:`pTwink ${p.d} ease-in-out ${p.dl} infinite`}}/>)})}</div>);}
+function FxBreath(){return(<div style={{...AI,background:"rgba(15,0,0,1)"}}>{P12.map((p,i)=><div key={i} style={{position:"absolute",left:"15%",top:`${30+(i*15)%40}%`,width:`${15+(i*10)%30}px`,height:`${6+(i*4)%10}px`,background:"radial-gradient(ellipse at 0% 50%,#fff,#fbbf24,#ef4444,transparent)",borderRadius:"0 50% 50% 0",animation:`pDrift ${.5+(i*.08)%.5}s linear ${(i*.07)%.8}s infinite`}}/>)}</div>);}
+function FxTheRift(){return(<div style={{...CC,background:"#000"}}><div style={{position:"absolute",width:"4px",height:"90%",background:"linear-gradient(180deg,transparent,#818cf8,#c084fc,transparent)",boxShadow:"0 0 15px #818cf8",animation:"pWave 2s ease-in-out infinite","--wy":"-5px"}}/></div>);}
+function FxNothing(){return(<div style={{...AI,background:"#000"}}>{[...Array(3)].map((_,i)=><div key={i} style={{position:"absolute",left:`${15+(i*30)}%`,top:`${20+(i*25)}%`,width:"1px",height:"1px",borderRadius:"50%",background:"rgba(255,255,255,.15)",animation:`pTwink ${2+(i*1.5)}s ease-in-out ${i*1.2}s infinite`}}/>)}</div>);}
+function FxFeather(){return(<div style={{...AI,background:"linear-gradient(180deg,rgba(15,10,0,.3),rgba(8,5,0,.6))"}}>{P12.map((p,i)=><svg key={i} style={{position:"absolute",left:p.l,top:"-20px",animation:`pFallX ${p.d} linear ${p.dl} infinite`,"--dx":`${(i%2?1:-1)*12}px`,"--dr":"30deg"}} width="8" height="20" viewBox="0 0 8 20"><path d="M4,0 Q7,5 4,10 Q1,5 4,0Z" fill="#fde68a99"/></svg>)}</div>);}
+function FxPortal(){return(<div style={{...AI,background:"rgba(2,0,8,1)"}}>{[...Array(4)].map((_,i)=><div key={i} style={{position:"absolute",left:`${10+(i*22)}%`,top:`${15+(i%2)*30}%`,width:"30px",height:"50px",border:"1px solid rgba(99,102,241,.4)",borderRadius:"50%/80% 80% 20% 20%",animation:`pFloat ${1.5+(i*.5)}s ease-in-out ${i*.4}s infinite`,"--fy":"-8px","--r0":"0deg","--r1":"0deg"}}/>)}</div>);}
+function FxSpiral(){const c=["#c084fc","#818cf8","#e879f9"];return(<div style={{...CC,background:"rgba(3,0,15,.95)"}}>{P18.map((p,i)=>{const a=(i/18)*6.28*4;return(<div key={i} style={{position:"absolute",width:"2px",height:"2px",borderRadius:"50%",left:`calc(50% + ${Math.cos(a)*i*2}px)`,top:`calc(50% + ${Math.sin(a)*i*1.5}px)`,background:c[i%c.length],animation:`pTwink ${.6+(i*.04)}s ease-in-out ${i*.04}s infinite`}}/>)})}</div>);}
+function FxCelstorm(){return(<div style={{...AI,background:"rgba(2,2,15,.9)"}}>{[...Array(5)].map((_,i)=><svg key={i} style={{position:"absolute",left:`${8+(i*22)}%`,top:`${5+(i*18)%40}%`,animation:`pArc ${.4+(i*.07)%.5}s steps(1) ${(i*.15)%1.5}s infinite`}} width="10" height="45" viewBox="0 0 10 45"><polyline points="5,0 2,20 8,20 3,45" fill="none" stroke="#c4b5fd" strokeWidth="1.5"/></svg>)}</div>);}
+function FxBeyond(){return(<div style={{...CC,background:"#000"}}><div style={{width:"20px",height:"20px",borderRadius:"50%",background:"radial-gradient(circle,#fff,rgba(255,255,255,.3))",boxShadow:"0 0 30px #fff",animation:"pPulse 2s ease-out infinite"}}/></div>);}
+function FxApex(){return(<div style={{...AI,background:"rgba(3,5,15,.8)"}}><div style={{position:"absolute",bottom:0,left:"30%",right:"30%",height:"70%",background:"rgba(226,232,240,.04)",clipPath:"polygon(50% 0%,0% 100%,100% 100%)"}}/>{P8.map((p,i)=><div key={i} style={{position:"absolute",left:p.l,top:p.t,width:"2px",height:"2px",borderRadius:"50%",background:"rgba(226,232,240,.6)",animation:`pTwink ${p.d} ease-in-out ${p.dl} infinite`}}/>)}</div>);}
+function FxCrownGold(){return(<div style={{...CC,background:"rgba(8,5,0,.85)"}}>{[...Array(8)].map((_,i)=><div key={i} style={{position:"absolute",width:"2px",height:"32px",background:"linear-gradient(0deg,#fbbf24,transparent)",transformOrigin:"50% 100%",transform:`rotate(${i*45}deg) translateY(-25px)`,animation:`pBeam 1.5s ease-in-out ${(i*.15)}s infinite`}}/>)}<div style={{width:"16px",height:"12px",clipPath:"polygon(50% 0%,0% 100%,25% 70%,50% 100%,75% 70%,100% 100%)",background:"linear-gradient(180deg,#fbbf24,#d97706)"}}/></div>);}
+function FxInfinity2(){return(<div style={{...CC,background:"rgba(5,3,18,.9)"}}>{[...Array(16)].map((_,i)=>{const t=i/16*6.28;return(<div key={i} style={{position:"absolute",width:"4px",height:"4px",borderRadius:"50%",background:`hsl(${250+(i*10)}deg,70%,65%)`,left:`calc(50% + ${Math.cos(t)*38}px)`,top:`calc(50% + ${Math.sin(2*t)*19}px)`,animation:`pTwink .8s ease-in-out ${i*.05}s infinite`}}/>)})}</div>);}
+function FxEtstorm(){return(<div style={{...AI,background:"rgba(2,2,15,.95)"}}>{[...Array(6)].map((_,i)=><svg key={i} style={{position:"absolute",left:`${8+(i*17)}%`,top:`${5+(i*15)%38}%`,animation:`pArc ${.35+(i*.06)%.4}s steps(1) ${(i*.14)%1.5}s infinite`}} width="10" height="40" viewBox="0 0 10 40"><polyline points="5,0 2,18 8,18 3,40" fill="none" stroke="#818cf8" strokeWidth="1.5"/></svg>)}</div>);}
+function FxFrozenClock(){return(<div style={{...CC,background:"rgba(3,3,12,.9)"}}><div style={{width:"55px",height:"55px",border:"1px solid rgba(129,140,248,.25)",borderRadius:"50%",position:"relative"}}><div style={{width:"3px",height:"18px",background:"rgba(129,140,248,.8)",position:"absolute",left:"50%",bottom:"50%",transformOrigin:"50% 100%"}}/><div style={{width:"3px",height:"12px",background:"rgba(129,140,248,.6)",position:"absolute",left:"50%",bottom:"50%",transformOrigin:"50% 100%",transform:"rotate(90deg)"}}/></div></div>);}
+function FxTheEnd(){return(<div style={{...CC,background:"#000"}}><div style={{width:"55%",height:"1px",background:"linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent)",animation:"pWave 4s ease-in-out infinite","--wy":"-1px"}}/></div>);}
+function FxTerminus(){return(<div style={{...CC,background:"#000"}}><div style={{position:"absolute",width:"60%",height:"1px",background:"linear-gradient(90deg,transparent,rgba(239,68,68,.4),transparent)"}}/><div style={{position:"absolute",width:"1px",height:"60%",background:"linear-gradient(180deg,transparent,rgba(239,68,68,.4),transparent)"}}/><div style={{width:"6px",height:"6px",borderRadius:"50%",background:"#ef4444",boxShadow:"0 0 8px #ef4444"}}/></div>);}
+function FxVeil(){return(<div style={{...AI,background:"rgba(3,3,12,.85)"}}>{[...Array(8)].map((_,i)=><div key={i} style={{position:"absolute",left:`${8+(i*12)}%`,top:0,height:"100%",width:"8px",background:"linear-gradient(180deg,transparent,rgba(226,232,240,.06),transparent)",filter:"blur(3px)",animation:`pAurora ${2+(i*.3)}s ease-in-out ${(i*.2)%2}s infinite`}}/>)}</div>);}
+function FxZeroPoint(){return(<div style={{...CC,background:"#000"}}><div style={{width:"2px",height:"2px",borderRadius:"50%",background:"rgba(71,85,105,.3)"}}/></div>);}
+function FxSilence(){return(<div style={{...AI,background:"#000"}}>{[...Array(5)].map((_,i)=><div key={i} style={{position:"absolute",left:`${10+(i*18)}%`,top:`${20+(i%2)*40}%`,width:`${15+(i*8)%20}px`,height:"1px",background:"rgba(71,85,105,.05)"}}/>)}</div>);}
+function FxHydra(){return(<div style={{...AI,background:"rgba(5,15,0,1)"}}>{[...Array(3)].map((_,i)=><svg key={i} style={{position:"absolute",left:`${25+(i*25)}%`,bottom:0,animation:`pFloat ${1.3+(i*.3)}s ease-in-out ${i*.3}s infinite`,"--fy":"-8px","--r0":"0deg","--r1":"6deg"}} width="16" height="70" viewBox="0 0 16 70"><path d="M8,70 Q4,40 8,20 Q12,8 8,0" fill="none" stroke="#84cc16" strokeWidth="3"/><circle cx="8" cy="0" r="4" fill="#4ade80"/></svg>)}</div>);}
+function FxAngler(){return(<div style={{...CC,background:"rgba(0,2,10,1)"}}><div style={{position:"absolute",width:"6px",height:"6px",borderRadius:"50%",background:"radial-gradient(circle,#fff,#fde68a)",boxShadow:"0 0 20px #fde68a,0 0 40px #fbbf24",top:"30%",animation:"pPulse 2s ease-out infinite"}}/>{P6.map((p,i)=><div key={i} style={{position:"absolute",left:p.l,top:p.t,width:"1px",height:"1px",borderRadius:"50%",background:"rgba(56,189,248,.4)",animation:`pTwink ${p.d} ease-in-out ${p.dl} infinite`}}/>)}</div>);}
+function FxInk(){return(<div style={{...AI,background:"#000"}}>{[...Array(4)].map((_,i)=><div key={i} style={{position:"absolute",left:`${10+(i*22)}%`,top:`${15+(i*18)}%`,width:`${20+(i*10)}px`,height:`${20+(i*10)}px`,background:"radial-gradient(circle,rgba(30,27,75,.5),transparent)",borderRadius:"50%",filter:"blur(4px)",animation:`pMorph ${2+(i*.4)}s ease-in-out ${i*.3}s infinite`}}/>)}</div>);}
+function FxGlitchVortex(){return(<div style={{...CC,background:"#000",animation:"pGlitch .5s steps(3) infinite"}}>{P12.map((p,i)=><div key={i} style={{position:"absolute",width:"3px",height:"3px",borderRadius:"50%",background:"#ec4899",animation:`pVortex ${p.d} linear ${p.dl} infinite`,"--vr":"30px"}}/>)}</div>);}
+function FxBars(){return(<div style={{...AI,background:"rgba(10,0,10,.9)",display:"flex",alignItems:"flex-end",justifyContent:"center",gap:"4px",padding:"0 0 20px"}}>{[...Array(8)].map((_,i)=><div key={i} style={{width:"6px",height:`${20+(i%4)*15}px`,background:"linear-gradient(0deg,#ec4899,#f9a8d4)",borderRadius:"2px",animation:`pWave ${.4+(i*.05)}s ease-in-out ${i*.06}s infinite alternate`,"--wy":"-10px"}}/>)}</div>);}
+function FxSine(){return(<div style={{...CC,background:"rgba(10,0,10,.9)"}}><svg width="100%" height="60" viewBox="0 0 200 60" style={{position:"absolute"}}><path d="M0,30 Q25,0 50,30 T100,30 T150,30 T200,30" fill="none" stroke="#ec4899" strokeWidth="2" style={{animation:"pWave 1.5s ease-in-out infinite","--wy":"-6px"}}/></svg></div>);}
+function FxWeb(){return(<div style={{...CC,background:"rgba(10,5,20,.85)"}}>{[...Array(6)].map((_,i)=><div key={i} style={{position:"absolute",width:"70px",height:"1px",background:"rgba(167,139,250,.3)",transform:`rotate(${i*30}deg)`}}/>)}{[1,2,3].map(r=><div key={r} style={{position:"absolute",width:`${r*22}px`,height:`${r*22}px`,border:"1px solid rgba(167,139,250,.25)",borderRadius:"50%"}}/>)}</div>);}
+
+// ── Impossible (personal) auras ──
+function FxTrains(){const lc=["#9ACD32","#F37321","#00A7DB","#E60012","#8F76D6"];return(<div style={{...AI,background:"rgba(3,6,15,1)"}}><svg style={{position:"absolute",inset:0,width:"100%",height:"100%"}} viewBox="0 0 280 190">{[50,80,110,130,160].map((y,i)=><line key={i} x1="0" y1={y} x2="280" y2={y} stroke={lc[i]} strokeWidth="1" opacity="0.2"/>)}{[...Array(5)].map((_,i)=>{const y=50+(i*28);return(<g key={i}><rect x="0" y={y-4} width="55" height="8" rx="2" fill="#f3f3f3" opacity="0.75"><animate attributeName="x" from="-65" to="345" dur={`${7+(i*2)}s`} begin={`${i*1.2}s`} repeatCount="indefinite"/></rect><rect x="0" y={y-4} width="55" height="2" rx="1" fill={lc[i]} opacity="0.8"><animate attributeName="x" from="-65" to="345" dur={`${7+(i*2)}s`} begin={`${i*1.2}s`} repeatCount="indefinite"/></rect></g>);})}</svg></div>);}
+function FxHellfire(){return(<div style={{...AI,background:"rgba(10,0,0,1)"}}>{P20.map((p,i)=><div key={i} style={{position:"absolute",left:`${5+(i*28)%88}%`,bottom:0,width:`${12+(i*8)%24}px`,height:`${25+(i*15)%45}px`,background:"radial-gradient(ellipse at 50% 90%,#fff,#fbbf24,#f97316,#ef4444,transparent)",borderRadius:"50% 50% 25% 25%",animation:`pRise ${.5+(i*.08)%.7}s ease-out ${(i*.07)%1.1}s infinite`}}/>)}</div>);}
+function FxGrid(){return(<div style={{...AI,background:"rgba(0,10,0,1)"}}><div style={{position:"absolute",inset:0,backgroundImage:"linear-gradient(rgba(0,255,65,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,65,.08) 1px,transparent 1px)",backgroundSize:"20px 20px"}}/>{P18.map((p,i)=><div key={i} style={{position:"absolute",left:p.l,top:"-10px",color:"rgba(0,255,65,.5)",fontSize:"9px",fontFamily:"'Share Tech Mono',monospace",animation:`pScan ${.8+(i*.08)%.7}s linear ${p.dl} infinite`}}>{i%2?"1":"0"}</div>)}</div>);}
+
+// ── Birthday auras ──
+function FxPartyHat(){return(<div style={{...CC,background:"rgba(20,5,20,.5)"}}><div style={{width:0,height:0,borderLeft:"18px solid transparent",borderRight:"18px solid transparent",borderBottom:"38px solid #ec4899",position:"relative"}}><div style={{position:"absolute",top:"-46px",left:"-3px",width:"6px",height:"6px",borderRadius:"50%",background:"#fbbf24"}}/></div>{P6.map((p,i)=><div key={i} style={{position:"absolute",left:p.l,top:p.t,width:"3px",height:"3px",borderRadius:"50%",background:"#fbbf24",animation:`pTwink ${p.d} ease-in-out ${p.dl} infinite`}}/>)}</div>);}
+function FxPinata(){return(<div style={{...CC,background:"rgba(15,8,20,.6)"}}><div style={{width:"36px",height:"30px",background:"linear-gradient(135deg,#ec4899,#fbbf24,#4ade80)",borderRadius:"40%",animation:"pFloat 1.4s ease-in-out infinite","--fy":"-6px","--r0":"-3deg","--r1":"3deg"}}/>{P8.map((p,i)=><div key={i} style={{position:"absolute",left:p.l,top:p.t,width:"3px",height:"3px",borderRadius:"50%",background:["#ec4899","#fbbf24","#4ade80","#60a5fa"][i%4],animation:`pBurst .8s ease-out ${p.dl} infinite`,"--bx":`${(i%2?1:-1)*20}px`,"--by":"20px"}}/>)}</div>);}
+function FxCake(){return(<div style={{...CC,background:"rgba(15,5,20,.6)"}}><div style={{position:"relative"}}><div style={{width:"46px",height:"22px",background:"linear-gradient(180deg,#fce7f3,#f9a8d4)",borderRadius:"3px",position:"relative"}}><div style={{position:"absolute",top:"-10px",left:"6px",width:"3px",height:"12px",background:"#fbbf24"}}/><div style={{position:"absolute",top:"-16px",left:"6.5px",width:"3px",height:"5px",borderRadius:"50%",background:"#fb923c",animation:"candleFlicker 1s ease-in-out infinite"}}/><div style={{position:"absolute",top:"-10px",left:"20px",width:"3px",height:"12px",background:"#60a5fa"}}/><div style={{position:"absolute",top:"-16px",left:"20.5px",width:"3px",height:"5px",borderRadius:"50%",background:"#fb923c",animation:"candleFlicker 1.1s ease-in-out .2s infinite"}}/><div style={{position:"absolute",top:"-10px",left:"34px",width:"3px",height:"12px",background:"#4ade80"}}/><div style={{position:"absolute",top:"-16px",left:"34.5px",width:"3px",height:"5px",borderRadius:"50%",background:"#fb923c",animation:"candleFlicker .9s ease-in-out .1s infinite"}}/></div></div>{P6.map((p,i)=><div key={i} style={{position:"absolute",left:p.l,top:p.t,width:"2px",height:"2px",borderRadius:"50%",background:"#fbbf24",animation:`pTwink ${p.d} ease-in-out ${p.dl} infinite`}}/>)}</div>);}
+function FxFirework(){const c=["#ff006e","#fbbf24","#4ade80","#60a5fa"];return(<div style={{...CC,background:"rgba(10,5,20,.7)"}}>{c.map((col,i)=>[...Array(4)].map((_,j)=><div key={`${i}-${j}`} style={{position:"absolute",width:"3px",height:"3px",borderRadius:"50%",background:col,boxShadow:`0 0 5px ${col}`,animation:`fireworkOut ${.9+j*.2}s ease-out ${i*.15}s infinite`,"--fx":`${Math.cos(i/4*6.28)*(20+j*10)}px`,"--fy":`${Math.sin(i/4*6.28)*(20+j*10)}px`}}/>))}</div>);}
+function FxFireworkMulti(){const bursts=[{l:"25%",t:"30%",c:"#ff006e"},{l:"65%",t:"25%",c:"#fbbf24"},{l:"45%",t:"55%",c:"#60a5fa"}];return(<div style={{...AI,background:"rgba(5,2,15,.85)"}}>{bursts.map((b,bi)=>[...Array(8)].map((_,i)=><div key={`${bi}-${i}`} style={{position:"absolute",left:b.l,top:b.t,width:"3px",height:"3px",borderRadius:"50%",background:b.c,boxShadow:`0 0 6px ${b.c}`,animation:`fireworkOut 1.1s ease-out ${bi*.4+i*.02}s infinite`,"--fx":`${Math.cos(i/8*6.28)*35}px`,"--fy":`${Math.sin(i/8*6.28)*35}px`}}/>))}</div>);}
+function FxCrownBday(){return(<div style={{...CC,background:"rgba(15,5,20,.6)"}}>{[...Array(6)].map((_,i)=><div key={i} style={{position:"absolute",width:"2px",height:"30px",background:"linear-gradient(0deg,#ec4899,transparent)",transformOrigin:"50% 100%",transform:`rotate(${i*60}deg) translateY(-24px)`,animation:`pBeam 1.5s ease-in-out ${i*.15}s infinite`}}/>)}<div style={{width:"18px",height:"13px",clipPath:"polygon(50% 0%,0% 100%,25% 65%,50% 100%,75% 65%,100% 100%)",background:"linear-gradient(180deg,#fbbf24,#ec4899)"}}/></div>);}
+function FxCandle(){return(<div style={{...CC,background:"rgba(10,5,0,.85)"}}><div style={{width:"5px",height:"32px",background:"linear-gradient(180deg,#fde68a,#fbbf24)",borderRadius:"2px",position:"relative"}}><div style={{position:"absolute",top:"-11px",left:"0.5px",width:"4px",height:"9px",borderRadius:"50%",background:"radial-gradient(circle,#fff,#fb923c)",animation:"candleFlicker .9s ease-in-out infinite",boxShadow:"0 0 12px #fbbf24"}}/></div>{P8.map((p,i)=><div key={i} style={{position:"absolute",left:p.l,top:p.t,width:"2px",height:"2px",borderRadius:"50%",background:"#fde68a",animation:`pTwink ${p.d} ease-in-out ${p.dl} infinite`}}/>)}</div>);}
+function FxGift(){return(<div style={{...CC,background:"rgba(10,15,10,.6)"}}><div style={{width:"32px",height:"26px",background:"linear-gradient(135deg,#818cf8,#6366f1)",borderRadius:"3px",position:"relative",animation:"partyPop .5s ease-out"}}><div style={{position:"absolute",top:0,left:"14px",width:"4px",height:"100%",background:"#fbbf24"}}/><div style={{position:"absolute",left:0,top:"11px",width:"100%",height:"4px",background:"#fbbf24"}}/></div>{P6.map((p,i)=><div key={i} style={{position:"absolute",left:p.l,top:p.t,width:"3px",height:"3px",borderRadius:"50%",background:["#818cf8","#fbbf24","#ec4899"][i%3],animation:`pBurst 1s ease-out ${p.dl} infinite`,"--bx":`${(i%2?1:-1)*22}px`,"--by":"-18px"}}/>)}</div>);}
+function FxBdayEternal(){return(<div style={{...CC,background:"rgba(5,3,10,.9)"}}>{[...Array(16)].map((_,i)=>{const t=i/16*6.28;const c=["#ff006e","#fbbf24","#4ade80","#60a5fa","#c084fc"][i%5];return(<div key={i} style={{position:"absolute",width:"4px",height:"4px",borderRadius:"50%",background:c,boxShadow:`0 0 6px ${c}`,left:`calc(50% + ${Math.cos(t)*42}px)`,top:`calc(50% + ${Math.sin(2*t)*21}px)`,animation:`pTwink .8s ease-in-out ${i*.05}s infinite`}}/>)})}</div>);}
+
+const FX={
+  droplet:()=><FxRain c1="#93c5fd" c2="#2563eb" bg1="rgba(30,58,138,.4)" bg2="rgba(15,23,42,.6)"/>,
+  cinder:()=><FxEmber c1="#fed7aa" c2="#f97316" bg2="rgba(60,15,0,.3)"/>,
+  flame:()=><FxRise c1="#fbbf24" c2="#ef4444" bg="rgba(40,0,0,.6)"/>,
+  breeze:()=><FxDrift c="#bfdbfe" bg="rgba(15,23,42,.4)"/>,
+  spark:()=><FxBeam c="#fbbf24" n={8} bg="rgba(10,5,30,.85)"/>,
+  leaf:()=><FxRain c1="#4ade80" c2="#166534" bg1="rgba(5,30,10,.3)" bg2="rgba(2,15,5,.5)" shape="0 80% 0 80%"/>,
+  pebble:()=><FxFloat c="#78716c" bg="rgba(12,8,4,.6)" shape="25%"/>,
+  ripple:()=><FxRing c="#94a3b8" n={4} bg="rgba(8,18,42,.6)"/>,
+  mist:()=><FxFloat c="#e2e8f0" bg="rgba(8,8,18,.5)" shape="50%"/>,
+  thorn:()=><FxThorn/>,
+  dust:()=><FxFloat c="#a3856a" bg="rgba(20,10,2,.5)" shape="50%"/>,
+  ash:()=><FxRain c1="#cbd5e1" c2="#94a3b8" bg1="rgba(10,10,12,.5)" bg2="rgba(5,5,7,.7)" shape="50%"/>,
+  frost:()=><FxTwinkle colors={["#bae6fd","#e0f2fe"]} bg="rgba(8,30,60,.5)"/>,
+  ember:()=><FxEmber c1="#fff7ed" c2="#fbbf24" bg2="rgba(60,20,0,.3)"/>,
+  thunder:()=><FxThunder/>,
+  crystal:()=><FxSpin colors={["#e9d5ff","#c084fc"]} bg="rgba(10,8,30,.7)"/>,
+  shadow:()=><FxShadow/>,
+  tide:()=><FxWave c="#60a5fa" n={4} bg="rgba(10,30,80,.4)"/>,
+  aurora:()=><FxAurora/>,
+  blizzard:()=><FxRain c1="#fff" c2="#dbeafe" bg1="rgba(5,15,40,.5)" bg2="rgba(15,25,60,.7)"/>,
+  glacier:()=><FxFloat c="#bae6fd" bg="rgba(8,30,60,.5)" shape="12%"/>,
+  vine:()=><FxVine/>,
+  gale:()=><FxDrift c="#94a3b8" bg="rgba(5,8,20,.5)"/>,
+  quartz:()=><FxQuartz/>,
+  solarflare:()=><FxRing c="#fbbf24" n={5} bg="rgba(30,8,0,.7)"/>,
+  nebula:()=><FxTwinkle colors={["#ec4899","#a855f7","#8b5cf6"]} bg="rgba(5,2,15,.8)"/>,
+  inferno:()=><FxTornado/>,
+  acidrain:()=><FxRain c1="#86efac" c2="#16a34a" bg1="rgba(0,20,0,.5)" bg2="rgba(0,10,0,.7)"/>,
+  supernova:()=><FxBurst colors={["#fbbf24","#f97316","#ef4444","#c084fc"]} bg="rgba(5,0,15,.85)"/>,
+  blackhole:()=><FxBlackhole/>,
+  wormhole:()=><FxSpin colors={["#818cf8","#c084fc","#22d3ee"]} bg="rgba(5,2,20,.9)"/>,
+  antimatter:()=><FxVortex c1="#f87171" c2="#60a5fa" bg="rgba(0,0,0,.9)"/>,
+  cursed:()=><FxRise c1="#c084fc" c2="#581c87" bg="rgba(10,0,20,.8)"/>,
+  phantom:()=><FxFloat c="#e2e8f0" bg="rgba(5,5,15,.7)" shape="50%"/>,
+  crystrain:()=><FxRain c1="#93c5fd" c2="#60a5fa" bg1="rgba(15,30,60,.5)" bg2="rgba(8,18,45,.7)"/>,
+  angels:()=><FxRain c1="#fde68a" c2="#eab308" bg1="rgba(30,20,0,.3)" bg2="rgba(15,10,0,.5)"/>,
+  timerift:()=><FxClock/>,
+  singularity:()=><FxSingularity/>,
+  paradox:()=><FxParadox/>,
+  ancientvoid:()=><FxRune c="#fbbf24" chars={["ᚠ","ᚢ","ᚦ","ᚨ"]} bg="rgba(0,0,0,1)"/>,
+  divlight:()=><FxBeam c="#fde68a" n={12} bg="rgba(20,15,0,.6)"/>,
+  infloop:()=><FxInfinity/>,
+  universe:()=><FxGalaxy/>,
+  dbreath:()=><FxBreath/>,
+  therift:()=><FxTheRift/>,
+  nothingness:()=><FxNothing/>,
+  creation:()=><FxBurst colors={["#4ade80","#86efac","#fbbf24"]} bg="rgba(0,5,0,.9)"/>,
+  pulsar:()=><FxRing c="#f97316" n={5} bg="rgba(2,2,15,.85)"/>,
+  quicksand:()=><FxVortex c1="#d97706" c2="#92400e" bg="rgba(20,12,0,.8)"/>,
+  cometpulse:()=><FxDrift c="#fbbf24" bg="rgba(2,2,12,.85)"/>,
+  voidstorm:()=><FxVortex c1="#6366f1" c2="#312e81" bg="rgba(0,0,0,1)"/>,
+  ethereal:()=><FxFloat c="#e879f9" bg="rgba(5,5,18,.6)" shape="50%"/>,
+  etflame:()=><FxRise c1="#fff7ed" c2="#fbbf24" bg="rgba(40,10,0,.8)"/>,
+  sstorm:()=><FxWave c="#fbbf24" n={5} bg="rgba(20,5,0,.8)"/>,
+  cosbloom:()=><FxBurst colors={["#f9a8d4","#c084fc","#818cf8"]} bg="rgba(5,2,12,.85)"/>,
+  quantum:()=><FxWave c="#22d3ee" n={4} bg="rgba(3,5,20,.8)"/>,
+  starforge:()=><FxBurst colors={["#fff","#fef08a","#fbbf24"]} bg="rgba(2,2,10,.9)"/>,
+  holylight:()=><FxBeam c="#fff" n={8} bg="rgba(15,12,0,.55)"/>,
+  seraphim:()=><FxFeather/>,
+  darkmatter:()=><FxFloat c="#22d3ee" bg="rgba(0,0,2,1)" shape="50%"/>,
+  evhorizon:()=><FxRing c="#22d3ee" n={6} bg="rgba(0,0,0,1)"/>,
+  voidwalk:()=><FxPortal/>,
+  astral:()=><FxDrift c="#818cf8" bg="rgba(3,2,15,.8)"/>,
+  nebcore:()=><FxSpiral/>,
+  darkenergy:()=><FxSpin colors={["#164e63"]} bg="rgba(0,0,2,1)"/>,
+  gravwave:()=><FxRing c="#22d3ee" n={5} bg="rgba(2,5,15,.8)"/>,
+  celgen:()=><FxTwinkle colors={["#fff","#fef08a","#bfdbfe"]} bg="rgba(2,2,8,1)"/>,
+  celcol:()=><FxVortex c1="#e0e7ff" c2="#818cf8" bg="rgba(2,2,8,1)"/>,
+  celstorm:()=><FxCelstorm/>,
+  starbirth:()=><FxBeam c="#fef08a" n={8} bg="rgba(2,2,8,1)"/>,
+  celdawn:()=><FxWave c="#f97316" n={5} bg="rgba(2,0,5,1)"/>,
+  celfire:()=><FxRise c1="#fff" c2="#c4b5fd" bg="rgba(5,0,15,1)"/>,
+  ascension:()=><FxEmber c1="#fef3c7" c2="#fbbf24" bg2="rgba(10,8,0,.3)"/>,
+  beyond:()=><FxBeyond/>,
+  enlighten:()=><FxSpin colors={["#fbbf24","#818cf8","#22d3ee"]} bg="rgba(2,2,8,.85)"/>,
+  transcend:()=><FxWave c="#c084fc" n={6} bg="rgba(2,2,8,.9)"/>,
+  apex:()=><FxApex/>,
+  thechosen:()=><FxCrownGold/>,
+  prichaos:()=><FxVortex c1="#f97316" c2="#3b82f6" bg="rgba(0,0,0,1)"/>,
+  prisea:()=><FxWave c="#1e40af" n={4} bg="rgba(5,20,60,.6)"/>,
+  privoid:()=><FxTwinkle colors={["#f97316"]} bg="rgba(0,0,0,1)"/>,
+  origin:()=><FxBurst colors={["#fbbf24","#f97316","#3b82f6","#fff"]} bg="rgba(0,0,0,1)"/>,
+  theancient:()=><FxFloat c="#92400e" bg="rgba(8,5,2,.7)" shape="8%"/>,
+  leviathan:()=><FxTentacleOld c="#dc2626"/>,
+  deepvoid:()=><FxRing c="#dc2626" n={3} bg="rgba(0,0,0,1)"/>,
+  abytide:()=><FxWave c="#dc2626" n={4} bg="rgba(2,0,8,1)"/>,
+  darkcurr:()=><FxDrift c="#dc2626" bg="rgba(0,0,5,1)"/>,
+  thedeep:()=><FxTwinkle colors={["#93c5fd"]} bg="rgba(0,0,3,1)"/>,
+  kraken:()=><FxTentacleOld c="#6366f1"/>,
+  eternity:()=><FxInfinity2/>,
+  etabyss:()=><FxSpin colors={["#818cf8"]} bg="rgba(0,0,5,1)"/>,
+  etdawn:()=><FxWave c="#c084fc" n={5} bg="rgba(3,2,10,1)"/>,
+  etstorm:()=><FxEtstorm/>,
+  timeless:()=><FxFrozenClock/>,
+  theend:()=><FxTheEnd/>,
+  finalform:()=><FxVortex c1="#f8fafc" c2="#818cf8" bg="rgba(0,0,0,1)"/>,
+  lastlight:()=><FxTwinkle colors={["#fde68a"]} bg="rgba(0,0,0,1)"/>,
+  terminus:()=><FxTerminus/>,
+  abszero:()=><FxFloat c="#bae6fd" bg="rgba(0,5,20,1)" shape="50%"/>,
+  theunseen:()=><FxTwinkle colors={["#6366f1"]} bg="rgba(0,0,5,.98)"/>,
+  whisper:()=><FxRing c="#6366f1" n={5} bg="rgba(2,2,12,.9)"/>,
+  phveil:()=><FxVeil/>,
+  theforgot:()=><FxTwinkle colors={["#6366f1"]} bg="rgba(0,0,3,.98)"/>,
+  enigma:()=><FxRune c="#6366f1" chars={["?"]} bg="rgba(2,2,10,.9)"/>,
+  forbidden:()=><FxRune c="#ec4899" chars={["⛔"]} bg="rgba(0,0,0,1)"/>,
+  theunknown:()=><FxGlitch colors={["#ec4899"]}/>,
+  ancsecret:()=><FxRune c="#fbbf24" chars={["𓀀","𓂋","𓈖","𓆑"]} bg="rgba(8,5,0,1)"/>,
+  corrtruth:()=><FxGlitch colors={["#ec4899","#6366f1"]}/>,
+  zero:()=><FxZeroPoint/>,
+  absence:()=><FxZeroPoint/>,
+  voidcore:()=><FxSpin colors={["#475569"]} bg="rgba(0,0,0,1)"/>,
+  thesilence:()=><FxSilence/>,
+  faintecho:()=><FxFloat c="#9ca3af" bg="rgba(10,10,12,.4)" shape="50%"/>,
+  staticwhisper:()=><FxGlitch colors={["#9ca3af","#6b7280"]} bg="rgba(8,8,8,.6)"/>,
+  dullspark:()=><FxBeam c="#9ca3af" n={6} bg="rgba(10,10,10,.5)"/>,
+  voidheart:()=><FxGlitchVortex/>,
+  genesisfracture:()=><FxVortex c1="#7c3aed" c2="#000" bg="#000"/>,
+  steamheart:()=><FxRise c1="#f8fafc" c2="#94a3b8" bg="rgba(15,23,42,.5)"/>,
+  petrichor:()=><FxRain c1="#94a3b8" c2="#475569" bg1="rgba(30,20,10,.4)" bg2="rgba(15,10,5,.7)"/>,
+  magmafrost:()=><FxSplit c1="#ef4444" c2="#60a5fa"/>,
+  voltide:()=><FxBeam c="#22d3ee" n={10} bg="rgba(5,15,35,.85)"/>,
+  emberquake:()=><FxEmber c1="#fed7aa" c2="#dc2626" bg2="rgba(60,10,0,.3)"/>,
+  frostspark:()=><FxTwinkle colors={["#bae6fd","#60a5fa","#e0f2fe"]} bg="rgba(5,15,35,.85)"/>,
+  stormforge:()=><FxBeam c="#fbbf24" n={12} bg="rgba(10,10,20,.85)"/>,
+  terraflux:()=><FxVortex c1="#84cc16" c2="#f97316" bg="rgba(10,15,0,.9)"/>,
+  cryoflame:()=><FxRise c1="#dbeafe" c2="#60a5fa" bg="rgba(5,15,35,.7)"/>,
+  genesisstorm:()=><FxSpin colors={["#f97316","#22d3ee","#84cc16","#a855f7"]} bg="rgba(5,5,15,.9)"/>,
+  wyrmling:()=><FxEmber c1="#fca5a5" c2="#dc2626" bg2="rgba(30,0,0,.3)"/>,
+  griffinfeather:()=><FxRain c1="#fde68a" c2="#d97706" bg1="rgba(30,20,0,.3)" bg2="rgba(10,5,0,.6)" shape="40% 90% 40% 90%"/>,
+  basiliskgaze:()=><FxRing c="#84cc16" n={4} bg="rgba(5,15,0,.9)"/>,
+  chimerasroar:()=><FxBurst colors={["#f97316","#facc15","#dc2626"]} bg="rgba(20,5,0,.9)"/>,
+  hydracoil:()=><FxHydra/>,
+  phoenixascension:()=><FxRise c1="#fef08a" c2="#f97316" bg="rgba(30,5,0,.6)"/>,
+  krakenswrath:()=><FxTentacle c="#6366f1"/>,
+  cerberusgate:()=><FxRise c1="#f97316" c2="#7f1d1d" bg="rgba(10,0,0,.9)"/>,
+  sphinxriddle:()=><FxTwinkle colors={["#fde68a","#fbbf24"]} bg="rgba(20,15,0,.85)"/>,
+  worldserpent:()=><FxTentacle c="#22c55e"/>,
+  bitflip:()=><FxGlitchText chars={["0","1"]} c="#00ff41"/>,
+  neondrip:()=><FxRain c1="#f472b6" c2="#c026d3" bg1="rgba(20,0,20,.5)" bg2="rgba(10,0,15,.8)"/>,
+  firewallbreach:()=><FxWave c="#ef4444" n={4} bg="rgba(15,0,0,.85)"/>,
+  datawraith:()=><FxFloat c="#22d3ee" bg="rgba(0,10,15,.85)" shape="20%"/>,
+  error404:()=><FxGlitch colors={["#ef4444","#00ff41","#fff"]}/>,
+  overclock:()=><FxEmber c1="#fed7aa" c2="#ef4444" bg2="rgba(30,5,0,.4)"/>,
+  neoncircuit:()=><FxBeam c="#00ff41" n={8} bg="rgba(0,10,0,.9)"/>,
+  mainframecore:()=><FxRing c="#22d3ee" n={5} bg="rgba(0,5,10,.92)"/>,
+  rootaccess:()=><FxVortex c1="#00ff41" c2="#fff" bg="rgba(0,10,0,.95)"/>,
+  singularityexe:()=><FxGlitchVortex/>,
+  tidepool:()=><FxFloat c="#7dd3fc" bg="rgba(5,20,40,.6)" shape="50%"/>,
+  seafoam:()=><FxWave c="#e0f2fe" n={3} bg="rgba(5,20,45,.5)"/>,
+  biolume:()=><FxTwinkle colors={["#22d3ee","#4ade80","#67e8f9"]} bg="rgba(0,10,25,.92)"/>,
+  coralbloom:()=><FxBurst colors={["#fb7185","#f472b6","#fbbf24"]} bg="rgba(0,15,30,.9)"/>,
+  anglerlure:()=><FxAngler/>,
+  ripcurrent:()=><FxVortex c1="#0ea5e9" c2="#075985" bg="rgba(0,10,25,.95)"/>,
+  tsunamicore:()=><FxWave c="#0ea5e9" n={6} bg="rgba(0,15,35,.7)"/>,
+  krakensink:()=><FxInk/>,
+  marianadepths:()=><FxTwinkle colors={["#1e3a8a"]} bg="rgba(0,2,10,1)"/>,
+  leviathanswake:()=><FxTentacle c="#0369a1"/>,
+  whisperingshadow:()=><FxFloat c="#1e293b" bg="rgba(0,0,5,.95)" shape="40%"/>,
+  staticdread:()=><FxGlitch colors={["#e2e8f0","#475569"]}/>,
+  thewatcher:()=><FxEye />,
+  unspeakable:()=><FxGlitch colors={["#7c3aed","#000"]}/>,
+  eldritchwhisper:()=><FxRune c="#a855f7" chars={["ᛝ","ᛟ","ᚼ","ᛞ"]} bg="rgba(5,0,15,1)"/>,
+  sanityfray:()=><FxGlitch colors={["#a855f7","#ef4444","#fff"]}/>,
+  madnessincarnate:()=><FxGlitchVortex/>,
+  voidtendril:()=><FxTentacle c="#4c1d95"/>,
+  forbiddensight:()=><FxEye multi={true}/>,
+  theoldonestirs:()=><FxTentacle c="#312e81" big={true}/>,
+  springbud:()=><FxFloat c="#4ade80" bg="rgba(5,20,5,.5)" shape="30%"/>,
+  summerhaze:()=><FxWave c="#fbbf24" n={3} bg="rgba(20,15,0,.4)"/>,
+  autumndrift:()=><FxRain c1="#f97316" c2="#92400e" bg1="rgba(20,10,0,.4)" bg2="rgba(10,5,0,.6)" shape="0 80% 0 80%"/>,
+  wintersbreath:()=><FxRain c1="#e0f2fe" c2="#7dd3fc" bg1="rgba(5,15,35,.5)" bg2="rgba(2,10,25,.7)"/>,
+  monsoonking:()=><FxRain c1="#60a5fa" c2="#1e3a8a" bg1="rgba(5,10,30,.6)" bg2="rgba(2,5,20,.85)"/>,
+  blizzardsovereign:()=><FxRain c1="#fff" c2="#dbeafe" bg1="rgba(10,20,40,.6)" bg2="rgba(5,15,35,.8)"/>,
+  harvestmoon:()=><FxRing c="#f97316" n={4} bg="rgba(15,10,0,.85)"/>,
+  solstice:()=><FxSplit c1="#fbbf24" c2="#312e81"/>,
+  eternalspring:()=><FxBurst colors={["#f472b6","#4ade80","#fbbf24"]} bg="rgba(5,15,5,.8)"/>,
+  seasonsreckoning:()=><FxSpin colors={["#4ade80","#f97316","#7dd3fc","#f472b6"]} bg="rgba(5,5,10,.85)"/>,
+  claytablet:()=><FxRune c="#a8a29e" chars={["𒀭","𒌷","𒆠"]} bg="rgba(15,10,5,.85)"/>,
+  desertwind:()=><FxDrift c="#d6d3d1" bg="rgba(20,15,5,.5)"/>,
+  pharaohscurse:()=><FxRune c="#fbbf24" chars={["☥","𓂀","𓆣"]} bg="rgba(10,5,0,1)"/>,
+  terracottaguard:()=><FxFloat c="#a16207" bg="rgba(15,10,0,.7)" shape="8%"/>,
+  valhallasgate:()=><FxBeam c="#fbbf24" n={8} bg="rgba(10,5,0,.9)"/>,
+  atlantissunk:()=><FxWave c="#0ea5e9" n={5} bg="rgba(0,10,30,.8)"/>,
+  olympusthrone:()=><FxBeam c="#fff" n={10} bg="rgba(5,5,20,.85)"/>,
+  mayanprophecy:()=><FxRune c="#22c55e" chars={["𝋠","𝋡","𝋢","𝋣"]} bg="rgba(5,15,5,.9)"/>,
+  colosseumecho:()=><FxRing c="#d97706" n={5} bg="rgba(15,8,0,.85)"/>,
+  pyramidascension:()=><FxBeam c="#fde68a" n={6} bg="rgba(15,10,0,.85)"/>,
+  staticfuzz:()=><FxGlitch colors={["#f9a8d4","#fff","#c026d3"]}/>,
+  feedbackloop:()=><FxRing c="#ec4899" n={4} bg="rgba(10,0,10,.9)"/>,
+  bassline:()=><FxBars/>,
+  echochamber:()=><FxRing c="#c026d3" n={6} bg="rgba(10,0,15,.9)"/>,
+  sonicboom:()=><FxRing c="#fff" n={3} bg="rgba(5,5,15,.9)"/>,
+  treblespike:()=><FxBeam c="#f472b6" n={10} bg="rgba(10,0,10,.9)"/>,
+  waveform:()=><FxSine/>,
+  frequencyshift:()=><FxSpin colors={["#ec4899","#a855f7","#22d3ee"]} bg="rgba(5,5,15,.85)"/>,
+  resonance:()=><FxRing c="#f9a8d4" n={5} bg="rgba(10,5,10,.85)"/>,
+  theultrasonic:()=><FxRing c="#fff" n={7} bg="rgba(0,0,0,1)"/>,
+  daydreamhaze:()=><FxFloat c="#c4b5fd" bg="rgba(15,10,25,.5)" shape="50%"/>,
+  halfasleep:()=><FxRain c1="#c4b5fd" c2="#7c3aed" bg1="rgba(10,5,20,.5)" bg2="rgba(5,0,15,.7)" shape="20% 80% 20% 80%"/>,
+  dejavu:()=><FxRing c="#a78bfa" n={3} bg="rgba(10,5,20,.85)"/>,
+  luciddream:()=><FxTwinkle colors={["#e0e7ff","#c4b5fd"]} bg="rgba(5,5,20,.9)"/>,
+  sleepparalysis:()=><FxEye dark={true}/>,
+  nightmarefuel:()=><FxGlitch colors={["#1e1b4b","#7c3aed","#000"]}/>,
+  dreamweaver:()=><FxWeb/>,
+  remcycle:()=><FxBeam c="#a78bfa" n={6} bg="rgba(10,5,20,.85)"/>,
+  thesandman:()=><FxRain c1="#fde68a" c2="#fbbf24" bg1="rgba(15,10,0,.4)" bg2="rgba(10,5,20,.6)"/>,
+  dreamscape:()=><FxSpin colors={["#a78bfa","#f472b6","#60a5fa"]} bg="rgba(10,5,20,.85)"/>,
+  sugarrush:()=><FxFloat c="#f472b6" bg="rgba(20,5,15,.4)" shape="50%"/>,
+  bubblegumpop:()=><FxRing c="#f9a8d4" n={4} bg="rgba(20,5,15,.5)"/>,
+  honeydrip:()=><FxRain c1="#fde68a" c2="#d97706" bg1="rgba(20,15,0,.3)" bg2="rgba(10,8,0,.5)" shape="0 0 50% 50%"/>,
+  gummycore:()=><FxFloat c="#4ade80" bg="rgba(5,15,5,.4)" shape="30%"/>,
+  choconova:()=><FxBurst colors={["#78350f","#92400e","#fbbf24"]} bg="rgba(15,8,0,.85)"/>,
+  cottoncandycloud:()=><FxFloat c="#f9a8d4" bg="rgba(15,5,15,.4)" shape="45%"/>,
+  candystorm:()=><FxBurst colors={["#f472b6","#60a5fa","#facc15","#4ade80"]} bg="rgba(10,5,15,.85)"/>,
+  frostingoverflow:()=><FxWave c="#f9a8d4" n={4} bg="rgba(20,10,15,.4)"/>,
+  sugarhigh:()=><FxBurst colors={["#fff","#f472b6","#fbbf24"]} bg="rgba(10,5,10,.85)"/>,
+  theultimatesundae:()=><FxSpin colors={["#fde68a","#f472b6","#78350f","#fff"]} bg="rgba(10,5,5,.85)"/>,
+  owner_aura:()=><FxTrains/>,
+  sino_aura:()=><FxHellfire/>,
+  paji_aura:()=><FxGrid/>,
+  confetti:()=><FxBurst colors={["#ff006e","#fbbf24","#4ade80","#60a5fa","#c084fc"]} bg="rgba(20,5,20,.5)"/>,
+  balloon:()=><FxFloat c="#f472b6" bg="rgba(20,5,20,.4)" shape="45% 45% 45% 45%/55% 55% 45% 45%"/>,
+  partyhat:()=><FxPartyHat/>,
+  streamer:()=><FxDrift c="#fbbf24" bg="rgba(20,10,15,.4)"/>,
+  sparkler:()=><FxTwinkle colors={["#fff","#fde68a","#fbbf24"]} bg="rgba(15,10,0,.7)"/>,
+  partypopper:()=><FxBurst colors={["#ec4899","#fbbf24","#4ade80","#60a5fa","#c084fc","#fff"]} bg="rgba(15,5,20,.6)"/>,
+  pinata:()=><FxPinata/>,
+  bdaycake:()=><FxCake/>,
+  fireworkburst:()=><FxFirework/>,
+  grandfinal:()=><FxFireworkMulti/>,
+  bdaycrown:()=><FxCrownBday/>,
+  wishingstar:()=><FxBeam c="#fde68a" n={10} bg="rgba(10,5,20,.7)"/>,
+  celnova:()=><FxBurst colors={["#fff","#fbbf24","#ec4899","#818cf8"]} bg="rgba(5,2,15,.85)"/>,
+  thecandle:()=><FxCandle/>,
+  starlightwish:()=><FxTwinkle colors={["#fff","#fde68a","#f9a8d4"]} bg="rgba(3,2,15,.85)"/>,
+  thegift:()=><FxGift/>,
+  bdayeternal:()=><FxBdayEternal/>,
+};
+
+function AuraCardEffect({id}){
+  const render=FX[id];
+  if(!render)return <div style={{...AI,background:"rgba(5,5,15,.8)"}}/>;
+  try{return render();}catch{return <div style={{...AI,background:"rgba(5,5,15,.8)"}}/>;}
+}
+
+
+const LUCK_SHOP=[
+  {id:"l1",name:"Lucky Charm",   boost:.25, cost:500,    label:"+0.25 Luck"},
+  {id:"l2",name:"Fortune Shard", boost:.5,  cost:2500,   label:"+0.50 Luck"},
+  {id:"l3",name:"Mystic Orb",    boost:1.0, cost:10000,  label:"+1.00 Luck"},
+  {id:"l4",name:"Divine Fortune",boost:3.0, cost:75000,  label:"+3.00 Luck"},
+  {id:"l5",name:"Cosmic Essence",boost:10.0,cost:600000, label:"+10.0 Luck"},
+];
+// Auto-roll speed (slower than before: was 2000/1300/800/450/200)
+const SPEED_SHOP=[
+  {level:2,name:"Speed Lv.2",cost:300,  ms:2200,label:"2.2s"},
+  {level:3,name:"Speed Lv.3",cost:1200, ms:1500,label:"1.5s"},
+  {level:4,name:"Speed Lv.4",cost:6500, ms:1000,label:"1.0s"},
+  {level:5,name:"Speed Lv.5",cost:35000,ms:600, label:"0.6s"},
+];
+const SPEED_MS=[3500,2200,1500,1000,600];
+
+const ALL_CODES={
+  "AURA2024":  {coins:1000,msg:"🎁 +1,000 Coins!"},
+  "LUCKYSTAR": {luck:.5,   msg:"⭐ +0.5 Luck!"},
+  "FREEGEMS":  {coins:500, msg:"💎 +500 Coins!"},
+  "PRIMORDIAL":{coins:5000,msg:"🌀 +5,000 Coins!"},
+  "UPDATE1":   {coins:2500,msg:"🎉 Update 1 — +2,500 Coins!"},
+  "YAMANOTE":  {aura:"owner_aura",msg:"🚆 Yamanote Soul unlocked!"},
+  "HELLFIRE":  {aura:"sino_aura", msg:"😈 Hellfire King unlocked!"},
+  "THEGRID":   {aura:"paji_aura", msg:"💻 The Grid unlocked!"},
+  "HAPPYBDAY": {coins:7777, luck:.7, msg:"🎂 Happy Birthday Finn! +7,777 Coins & +0.7 Luck!"},
+  "JUNE7TH":   {coins:5000, msg:"🎉 Birthday code! +5,000 Coins!"},
+};
+
+const BADGE_CLASS={faded:"b-faded",common:"b-common",rare:"b-rare",epic:"b-epic",legendary:"b-legendary",mythic:"b-mythic",divine:"b-divine",cosmic:"b-cosmic",celestial:"b-celestial",transcendent:"b-transcendent",primordial:"b-primordial",abyssal:"b-abyssal",eternal:"b-eternal",voidborn:"b-voidborn",omega:"b-omega",secret:"b-secret",ultrasecret:"b-ultrasecret",null:"b-null",impossible:"b-impossible"};
+
+const WORLD_BOOST=4; // active world auras are this many times more likely within their rarity bucket
+function rollAura(luck,activeWorld){
+  const adj={};let tot=0;
+  RK.forEach(k=>{const w=RARITY[k].weight;if(w<=0)return;const p=k==="faded"?w:k==="common"?w:w*luck;adj[k]=p;tot+=p;});
+  let r=Math.random()*tot;
+  for(const k of RK){
+    if(!adj[k])continue;
+    r-=adj[k];
+    if(r<=0){
+      const pool=AURAS.filter(a=>a.rarity===k&&!a.theme&&(!a.world||a.world===activeWorld));
+      if(!pool.length)return AURAS.find(a=>a.rarity===k)||AURAS[0];
+      let wtot=0;const weights=pool.map(a=>{const w=a.world&&a.world===activeWorld?WORLD_BOOST:1;wtot+=w;return w;});
+      let rr=Math.random()*wtot;
+      for(let i=0;i<pool.length;i++){rr-=weights[i];if(rr<=0)return pool[i];}
+      return pool[pool.length-1];
+    }
+  }
+  return AURAS[0];
+}
+function fmt(n){if(n>=1e12)return(n/1e12).toFixed(1)+"T";if(n>=1e9)return(n/1e9).toFixed(1)+"B";if(n>=1e6)return(n/1e6).toFixed(1)+"M";if(n>=1e3)return(n/1e3).toFixed(1)+"K";return n.toLocaleString();}
+
+function HoloFrame({r}){
+  if(!r||r.ord<5)return null;
+  const intensity=Math.min(1,(r.ord-4)/14);
+  return(<div style={{position:"absolute",inset:0,pointerEvents:"none",zIndex:2,borderRadius:"10px",overflow:"hidden"}}>
+    <div style={{position:"absolute",inset:0,background:`conic-gradient(from 0deg,transparent,${r.color}55,transparent 35%)`,animation:`holoSpin ${3.5-intensity*1.5}s linear infinite`,opacity:.35+intensity*.4,mixBlendMode:"screen"}}/>
+    <div style={{position:"absolute",inset:0,border:`${r.ord>=16?2:1}px solid ${r.color}70`,borderRadius:"10px",boxShadow:`inset 0 0 ${10+intensity*20}px ${r.color}30`}}/>
+  </div>);
+}
+function AuraDisplay({aura,onUnequip}){
+  const r=aura?RARITY[aura.rarity]:null;
+  const base=r?.color??"#1e293b";
+  return(
+    <div style={{position:"relative",height:"190px",borderRadius:"10px",overflow:"hidden",border:`1px solid ${base}25`}}>
+      {aura?<AuraCardEffect id={aura.id}/>:<div style={{...AI,...CC,background:"rgba(5,5,15,.8)"}}><div style={{textAlign:"center"}}><div style={{fontSize:"28px",opacity:.15}}>🌀</div><div style={{color:"#1e293b",fontSize:"10px",letterSpacing:"3px",fontFamily:"'Cinzel',serif",marginTop:"8px"}}>NO AURA EQUIPPED</div></div></div>}
+      {aura&&<HoloFrame r={r}/>}
+      {aura&&<div style={{position:"absolute",bottom:0,left:0,right:0,background:"linear-gradient(transparent,rgba(5,5,20,.94))",padding:"10px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",zIndex:3}}><div style={{display:"flex",alignItems:"center",gap:"9px"}}><span style={{fontSize:"22px"}}>{aura.icon}</span><div><div style={{fontFamily:`${aura?.theme==="techy"?"'Share Tech Mono',monospace":"'Cinzel',serif"}`,fontSize:"13px",fontWeight:700,color:base}}>{aura.name}</div><div style={{fontSize:"8.5px",letterSpacing:"2px",color:base,opacity:.65}}>{r.label.toUpperCase()}</div></div></div><button onClick={onUnequip} style={{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderRadius:"6px",padding:"4px 9px",color:"#475569",fontSize:"10px"}}>✕ Unequip</button></div>}
+    </div>
+  );
+}
+
+function Badge({aura}){
+  const r=RARITY[aura.rarity];const ord=r.ord;
+  const bw=ord>=12?2:1;const bgA=ord>=12?"22":ord>=8?"1c":"16";const bdA=ord>=12?"75":ord>=8?"60":"45";
+  return(<div className={BADGE_CLASS[aura.rarity]||"b-common"} style={{display:"inline-flex",alignItems:"center",gap:"5px",background:`${r.color}${bgA}`,border:`${bw}px solid ${r.color}${bdA}`,borderRadius:"20px",padding:"3px 10px 3px 6px",fontSize:"11px",flexShrink:0,whiteSpace:"nowrap"}}><span style={{fontSize:"12px"}}>{aura.icon}</span><span style={{color:r.color,fontWeight:ord>=10?600:400}}>{aura.name}</span></div>);
+}
+
+function CollectionModal({collection,onClose,onEquip,equipped,th}){
+  const [filter,setFilter]=useState("all");
+  const owned=Object.keys(collection).length;
+  const show=filter==="all"?RK:[filter];
+  return(
+    <div style={{position:"fixed",inset:0,zIndex:500,background:"rgba(2,2,14,.96)",backdropFilter:"blur(14px)",overflowY:"auto"}}>
+      <div style={{maxWidth:"680px",margin:"0 auto",padding:"24px 16px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"16px"}}>
+          <span style={{fontFamily:th.font,fontSize:"13px",letterSpacing:"4px",color:"#e2e8f0"}}>🏆 COLLECTION ({owned}/{AURAS.length})</span>
+          <button onClick={onClose} style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",borderRadius:"7px",padding:"6px 14px",color:"#94a3b8",fontSize:"11px"}}>CLOSE</button>
+        </div>
+        <div style={{display:"flex",gap:"5px",flexWrap:"wrap",marginBottom:"16px"}}>
+          <button onClick={()=>setFilter("all")} style={{padding:"3px 10px",borderRadius:"12px",border:`1px solid ${filter==="all"?"#94a3b8":"rgba(255,255,255,.08)"}`,background:filter==="all"?"rgba(148,163,184,.12)":"transparent",color:filter==="all"?"#e2e8f0":"#475569",fontSize:"9px"}}>ALL</button>
+          {RK.map(k=>{const rc=RARITY[k];const cnt=AURAS.filter(a=>a.rarity===k&&collection[a.id]).length;const tot=AURAS.filter(a=>a.rarity===k).length;if(!tot)return null;return <button key={k} onClick={()=>setFilter(k)} style={{padding:"3px 10px",borderRadius:"12px",border:`1px solid ${filter===k?rc.color:"rgba(255,255,255,.07)"}`,background:filter===k?`${rc.color}18`:"transparent",color:filter===k?rc.color:"#475569",fontSize:"9px"}}>{rc.label} {cnt}/{tot}</button>;})}
+        </div>
+        {show.map(rarity=>{
+          const rc=RARITY[rarity];const pool=AURAS.filter(a=>a.rarity===rarity);if(!pool.length)return null;
+          return(
+            <div key={rarity} style={{marginBottom:"20px"}}>
+              <div style={{fontSize:"9px",letterSpacing:"2px",color:rc.color,marginBottom:"8px",fontFamily:"'Cinzel',serif"}}>{rc.label} ({pool.length})</div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))",gap:"7px"}}>
+                {pool.map(aura=>{
+                  const cnt=collection[aura.id]||0;const isImp=aura.rarity==="impossible";const isEq=equipped?.id===aura.id;
+                  return(
+                    <div key={aura.id} style={{position:"relative",background:`${rc.color}${cnt?"10":"05"}`,border:`1px solid ${isEq?rc.color:rc.color+(cnt?"30":"10")}`,borderRadius:"10px",padding:"10px",opacity:cnt?1:isImp?.12:.25,boxShadow:isEq?`0 0 12px ${rc.color}50`:"none",overflow:"hidden"}}>
+                      {cnt>0&&<div style={{position:"absolute",inset:0,opacity:.5}}><AuraCardEffect id={aura.id}/></div>}
+                      {cnt>0&&<HoloFrame r={rc}/>}
+                      <div style={{position:"relative",zIndex:3,display:"flex",alignItems:"center",gap:"8px",marginBottom:cnt?"8px":"0"}}>
+                        <span style={{fontSize:"20px"}}>{isImp&&!cnt?"❓":aura.icon}</span>
+                        <div><div style={{fontSize:"11px",color:cnt?rc.color:"#475569",fontWeight:600}}>{isImp&&!cnt?"???":aura.name}</div><div style={{fontSize:"8px",color:"#334155",marginTop:"1px"}}>{cnt?`× ${cnt}`:isImp?"Secret":"Not found"}</div></div>
+                      </div>
+                      {cnt>0&&<button onClick={()=>{onEquip(aura);onClose();}} style={{position:"relative",zIndex:3,width:"100%",padding:"5px 0",background:isEq?`${rc.color}30`:`${rc.color}15`,border:`1px solid ${rc.color}${isEq?"80":"40"}`,borderRadius:"6px",color:rc.color,fontSize:"9.5px",fontFamily:th.font,letterSpacing:"1px",cursor:"pointer",fontWeight:isEq?700:400}}>{isEq?"✓ EQUIPPED":"⚡ EQUIP"}</button>}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function WorldsModal({unlockedWorlds,activeWorld,coins,onUnlock,onActivate,onClose,th}){
+  return(
+    <div style={{position:"fixed",inset:0,zIndex:600,background:"rgba(2,2,14,.97)",backdropFilter:"blur(14px)",overflowY:"auto"}}>
+      <div style={{maxWidth:"680px",margin:"0 auto",padding:"24px 16px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"8px"}}>
+          <span style={{fontFamily:th.font,fontSize:"13px",letterSpacing:"4px",color:"#e2e8f0"}}>🗺️ WORLDS ({unlockedWorlds.length}/{WORLDS.length})</span>
+          <button onClick={onClose} style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",borderRadius:"7px",padding:"6px 14px",color:"#94a3b8",fontSize:"11px"}}>CLOSE</button>
+        </div>
+        <div style={{fontSize:"10px",color:"#64748b",marginBottom:"16px",lineHeight:1.5}}>Unlock a world to permanently gain its luck &amp; speed bonus and its shop item. Set a world ACTIVE to boost the chance of rolling its auras (base auras always still roll too). Only one world can be active.</div>
+        {activeWorld&&<button onClick={()=>onActivate(null)} style={{width:"100%",marginBottom:"12px",padding:"9px",background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.1)",borderRadius:"8px",color:"#94a3b8",fontSize:"10px",letterSpacing:"1px"}}>✕ DEACTIVATE CURRENT WORLD</button>}
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))",gap:"8px"}}>
+          {WORLDS.map(w=>{
+            const unlocked=unlockedWorlds.includes(w.id);
+            const active=activeWorld===w.id;
+            const auraCount=AURAS.filter(a=>a.world===w.id).length;
+            return(
+              <div key={w.id} style={{background:`${w.color}${unlocked?"12":"06"}`,border:`1px solid ${active?w.color:w.color+(unlocked?"35":"15")}`,borderRadius:"10px",padding:"12px",boxShadow:active?`0 0 14px ${w.color}55`:"none"}}>
+                <div style={{fontSize:"26px",marginBottom:"6px"}}>{w.icon}</div>
+                <div style={{fontSize:"12px",fontWeight:700,color:unlocked?w.color:"#64748b",marginBottom:"3px"}}>{w.name}</div>
+                <div style={{fontSize:"8.5px",color:"#475569",marginBottom:"8px"}}>{auraCount} auras · +{w.luckBonus} luck · +{w.speedBonus}ms spd</div>
+                {!unlocked&&<button onClick={()=>onUnlock(w)} disabled={coins<w.cost} style={{width:"100%",padding:"6px 0",background:coins>=w.cost?`${w.color}22`:"rgba(255,255,255,.03)",border:`1px solid ${coins>=w.cost?w.color+"70":"rgba(255,255,255,.06)"}`,borderRadius:"6px",color:coins>=w.cost?w.color:"#334155",fontSize:"9.5px",cursor:coins<w.cost?"not-allowed":"pointer"}}>🔒 {fmt(w.cost)} 💰</button>}
+                {unlocked&&<button onClick={()=>onActivate(active?null:w.id)} style={{width:"100%",padding:"6px 0",background:active?`${w.color}35`:`${w.color}15`,border:`1px solid ${w.color}${active?"90":"40"}`,borderRadius:"6px",color:w.color,fontSize:"9.5px",fontWeight:active?700:400,cursor:"pointer"}}>{active?"✓ ACTIVE":"SET ACTIVE"}</button>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── MAIN APP ──────────────────────────────────────────────────
+function App(){
+  const [coins,setCoins]           =useState(0);
+  const [rolls,setRolls]           =useState(0);
+  const [luck,setLuck]             =useState(1.0);
+  const [speedLvl,setSpeedLvl]     =useState(1);
+  const [equipped,setEquipped]     =useState(null);
+  const [lastRoll,setLastRoll]     =useState(null);
+  const [history,setHistory]       =useState([]);
+  const [collection,setCollection] =useState({});
+  const [auto,setAuto]             =useState(false);
+  const [shopOpen,setShopOpen]     =useState(false);
+  const [collOpen,setCollOpen]     =useState(false);
+  const [codeInput,setCodeInput]   =useState("");
+  const [usedCodes,setUsedCodes]   =useState(new Set());
+  const [notif,setNotif]           =useState(null);
+  // Manual roll animation
+  const [rolling,setRolling]       =useState(false);
+  const [slotAura,setSlotAura]     =useState(null);
+  // Auto roll animation (shorter spin)
+  const [autoSpin,setAutoSpin]     =useState(false);
+  const [autoSlot,setAutoSlot]     =useState(null);
+  const [flash,setFlash]           =useState(null);
+  // World system
+  const [unlockedWorlds,setUnlockedWorlds]=useState([]);
+  const [activeWorld,setActiveWorld]      =useState(null);
+  const [worldsOpen,setWorldsOpen]        =useState(false);
+  const [worldItemsBought,setWorldItemsBought]=useState([]);
+
+  const themeKey=equipped?.theme??"default";
+  const th=THEMES[themeKey];
+  const worldLuckBonus=unlockedWorlds.reduce((s,id)=>s+(WORLDS.find(w=>w.id===id)?.luckBonus||0),0);
+  const worldSpeedBonus=unlockedWorlds.reduce((s,id)=>s+(WORLDS.find(w=>w.id===id)?.speedBonus||0),0);
+  const effectiveLuck=parseFloat((luck+worldLuckBonus).toFixed(2));
+  const effectiveSpeedMs=Math.max(150,SPEED_MS[speedLvl-1]-worldSpeedBonus);
+  const luckRef=useRef(effectiveLuck);
+  const activeWorldRef=useRef(activeWorld);
+  const fastRef=useRef(null);const slowRef=useRef(null);const slowTm=useRef(null);
+  const autoSpinRef=useRef(null);const autoBusy=useRef(false);
+  useEffect(()=>{luckRef.current=effectiveLuck;},[effectiveLuck]);
+  useEffect(()=>{activeWorldRef.current=activeWorld;},[activeWorld]);
+  useEffect(()=>{document.body.style.background=th.bodyBg;},[th]);
+
+  // Manual roll slot machine (fast then slow, 1.3s total)
+  const pool=AURAS.filter(a=>!a.theme);
+  useEffect(()=>{
+    if(!rolling){setSlotAura(null);return;}
+    fastRef.current=setInterval(()=>setSlotAura(pool[Math.floor(Math.random()*pool.length)]),65);
+    slowTm.current=setTimeout(()=>{clearInterval(fastRef.current);slowRef.current=setInterval(()=>setSlotAura(pool[Math.floor(Math.random()*pool.length)]),210);},900);
+    return()=>{clearInterval(fastRef.current);clearInterval(slowRef.current);clearTimeout(slowTm.current);};
+  },[rolling]);
+
+  function showNotif(msg){setNotif(msg);setTimeout(()=>setNotif(null),2800);}
+
+  function applyRoll(aura){
+    const r=RARITY[aura.rarity];
+    setCoins(c=>c+r.coins);setRolls(n=>n+1);setLastRoll(aura);
+    setHistory(h=>[aura,...h].slice(0,120));
+    setCollection(prev=>({...prev,[aura.id]:(prev[aura.id]||0)+1}));
+    return r;
+  }
+
+  // Manual roll: full 1.3s spin animation
+  function handleRoll(){
+    if(rolling||autoSpin)return;
+    setRolling(true);
+    setTimeout(()=>{
+      const aura=rollAura(luckRef.current,activeWorldRef.current);const r=applyRoll(aura);
+      if(r.ord>=5){setFlash(r.color);setTimeout(()=>setFlash(null),r.ord>=10?1000:650);}
+      setRolling(false);
+      if(r.ord>=7)showNotif(`${aura.icon} ${aura.name} — ${r.label.toUpperCase()}! +${fmt(r.coins)} coins`);
+    },1300);
+  }
+
+  // Auto roll: quick 5-frame spin (300ms), then result
+  function triggerAutoRoll(){
+    if(autoBusy.current)return;
+    autoBusy.current=true;
+    const result=rollAura(luckRef.current,activeWorldRef.current);
+    let ticks=0;
+    setAutoSpin(true);
+    autoSpinRef.current=setInterval(()=>{
+      setAutoSlot(pool[Math.floor(Math.random()*pool.length)]);
+      ticks++;
+      if(ticks>=5){
+        clearInterval(autoSpinRef.current);
+        setAutoSpin(false);setAutoSlot(null);
+        autoBusy.current=false;
+        const r=applyRoll(result);
+        if(r.ord>=10){setFlash(r.color);setTimeout(()=>setFlash(null),500);showNotif(`${result.icon} ${result.name} — ${r.label.toUpperCase()}!`);}
+      }
+    },60);
+  }
+
+  useEffect(()=>{
+    if(!auto){clearInterval(autoSpinRef.current);setAutoSpin(false);setAutoSlot(null);autoBusy.current=false;return;}
+    const id=setInterval(triggerAutoRoll,effectiveSpeedMs);
+    return()=>{clearInterval(id);clearInterval(autoSpinRef.current);autoBusy.current=false;};
+  },[auto,speedLvl,worldSpeedBonus]); // eslint-disable-line
+
+  function buyLuck(item){if(coins<item.cost){showNotif("Not enough coins!");return;}setCoins(c=>c-item.cost);setLuck(l=>parseFloat((l+item.boost).toFixed(2)));showNotif(`${item.label} applied! ✨`);}
+  function buySpeed(item){if(speedLvl>=item.level)return;if(coins<item.cost){showNotif("Not enough coins!");return;}setCoins(c=>c-item.cost);setSpeedLvl(item.level);showNotif(`Speed upgraded to Lv.${item.level}!`);}
+  function redeem(){
+    const code=codeInput.trim().toUpperCase();if(!code)return;
+    if(usedCodes.has(code)){showNotif("Code already used!");return;}
+    const reward=ALL_CODES[code];if(!reward){showNotif("❌ Invalid code!");return;}
+    if(reward.coins)setCoins(c=>c+reward.coins);
+    if(reward.luck)setLuck(l=>parseFloat((l+reward.luck).toFixed(2)));
+    if(reward.aura){const aura=AURAS.find(a=>a.id===reward.aura);if(aura){setCollection(prev=>({...prev,[aura.id]:(prev[aura.id]||0)+1}));showNotif(reward.msg);}}
+    else showNotif(reward.msg);
+    setUsedCodes(prev=>new Set([...prev,code]));setCodeInput("");
+  }
+  function unlockWorld(w){
+    if(unlockedWorlds.includes(w.id))return;
+    if(coins<w.cost){showNotif("Not enough coins!");return;}
+    setCoins(c=>c-w.cost);
+    setUnlockedWorlds(prev=>[...prev,w.id]);
+    showNotif(`${w.icon} ${w.name} unlocked! +${w.luckBonus} luck, +${w.speedBonus}ms speed`);
+  }
+  function activateWorld(id){
+    setActiveWorld(id);
+    if(id){const w=WORLDS.find(x=>x.id===id);showNotif(`${w.icon} ${w.name} is now active!`);}
+    else showNotif("World deactivated");
+  }
+  function buyWorldItem(w){
+    if(worldItemsBought.includes(w.id))return;
+    if(coins<w.shopItem.cost){showNotif("Not enough coins!");return;}
+    setCoins(c=>c-w.shopItem.cost);
+    setLuck(l=>parseFloat((l+w.shopItem.boost).toFixed(2)));
+    setWorldItemsBought(prev=>[...prev,w.id]);
+    showNotif(`${w.shopItem.name} purchased! +${w.shopItem.boost} luck`);
+  }
+
+  const card={background:th.cardBg,border:`1px solid ${th.cardBorder}`,borderRadius:"10px",padding:"14px"};
+  const isRolling=rolling||autoSpin;
+  const currentSlot=slotAura||autoSlot;
+  const currentSlotR=currentSlot?RARITY[currentSlot.rarity]:null;
+  const isTechy=themeKey==="techy";
+
+  return(
+    <div style={{minHeight:"100vh",fontFamily:th.font,position:"relative",zIndex:1,paddingTop:"36px",paddingBottom:"36px"}}>
+      {/* 🎂 Birthday banners + background */}
+      <TopBanner/>
+      <BottomBanner/>
+      <BirthdayBg/>
+      {themeKey==="tokyo"    &&<TokyoBg/>}
+      {themeKey==="infernal" &&<InfernalBg/>}
+      {themeKey==="techy"    &&<TechyBg/>}
+      {flash&&<div style={{position:"fixed",inset:0,zIndex:999,background:flash,pointerEvents:"none",animation:"flashFade .9s ease-out forwards"}}/>}
+      {notif&&<div style={{position:"fixed",top:"18px",left:"50%",zIndex:998,background:"rgba(10,10,28,.97)",border:"1px solid rgba(255,255,255,.12)",borderRadius:"20px",padding:"8px 20px",fontSize:"12px",color:"#e2e8f0",whiteSpace:"nowrap",animation:"notifAnim 2.8s ease forwards",backdropFilter:"blur(10px)",pointerEvents:"none"}}>{notif}</div>}
+      {collOpen&&<CollectionModal collection={collection} onClose={()=>setCollOpen(false)} onEquip={a=>{setEquipped(a);showNotif(`${a.icon} ${a.name} equipped!`);}} equipped={equipped} th={th}/>}
+      {worldsOpen&&<WorldsModal unlockedWorlds={unlockedWorlds} activeWorld={activeWorld} coins={coins} onUnlock={unlockWorld} onActivate={activateWorld} onClose={()=>setWorldsOpen(false)} th={th}/>}
+
+      {/* Title */}
+      <div style={{textAlign:"center",paddingTop:"28px",paddingBottom:"14px",position:"relative",zIndex:1}}>
+        <h1 style={{fontFamily:"'Cinzel',serif",fontSize:"clamp(28px,7vw,50px)",fontWeight:900,letterSpacing:"8px",background:th.titleGrad,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",animation:th.titleAnim}}>{th.title}</h1>
+        <p style={{color:th.muted,fontSize:"10px",letterSpacing:isTechy?"2px":"5px",marginTop:"5px"}}>{th.sub??`${AURAS.length} AURAS · ${RK.length} RARITIES`}</p>
+        {th.sub&&<p style={{color:th.muted,fontSize:"9px",letterSpacing:"2px",marginTop:"3px",opacity:.6}}>{AURAS.length} AURAS · {RK.length} RARITIES</p>}
+      </div>
+
+      {/* Stats */}
+      <div style={{display:"flex",justifyContent:"center",gap:"7px",flexWrap:"wrap",padding:"0 14px 16px",position:"relative",zIndex:1}}>
+        {[{label:"Coins",val:`${fmt(coins)} 💰`},{label:"Rolls",val:rolls.toLocaleString()},{label:"Luck",val:`×${effectiveLuck.toFixed(2)}`},{label:"Speed",val:`Lv.${speedLvl}`}].map(s=>(
+          <div key={s.label} style={{background:th.statBg,border:`1px solid ${th.statBorder}`,borderRadius:"8px",padding:"6px 14px",display:"flex",gap:"8px",alignItems:"baseline"}}>
+            <span style={{color:th.muted,fontSize:"9.5px",letterSpacing:"1px"}}>{s.label}</span>
+            <span style={{color:th.accent,fontSize:"13px",fontWeight:500}}>{s.val}</span>
+          </div>
+        ))}
+      </div>
+
+      {activeWorld&&(()=>{const w=WORLDS.find(x=>x.id===activeWorld);return(
+        <div style={{textAlign:"center",marginBottom:"10px",position:"relative",zIndex:1}}>
+          <span style={{display:"inline-flex",alignItems:"center",gap:"6px",background:`${w.color}18`,border:`1px solid ${w.color}50`,borderRadius:"20px",padding:"4px 14px",fontSize:"10px",color:w.color,letterSpacing:"1px"}}>{w.icon} {w.name} ACTIVE</span>
+        </div>
+      );})()}
+
+      {/* Content */}
+      <div style={{maxWidth:"680px",margin:"0 auto",padding:"0 14px 40px",display:"flex",flexDirection:"column",gap:"9px",position:"relative",zIndex:1}}>
+
+        {/* Equipped */}
+        <div style={card}>
+          <div style={{display:"flex",alignItems:"center",gap:"6px",marginBottom:"10px"}}>
+            <span style={{color:th.accent}}>⚡</span>
+            <span style={{fontFamily:th.font,fontSize:"9px",letterSpacing:"3px",color:th.muted}}>EQUIPPED AURA</span>
+          </div>
+          <AuraDisplay aura={equipped} onUnequip={()=>setEquipped(null)}/>
+          {lastRoll&&lastRoll.id!==equipped?.id&&!isRolling&&(
+            <button onClick={()=>setEquipped(lastRoll)} style={{marginTop:"9px",width:"100%",padding:"9px",background:`${RARITY[lastRoll.rarity].color}14`,border:`1px solid ${RARITY[lastRoll.rarity].color}40`,borderRadius:"8px",color:RARITY[lastRoll.rarity].color,fontFamily:th.font,fontSize:"9.5px",letterSpacing:"2px",display:"flex",alignItems:"center",justifyContent:"center",gap:"7px"}}>
+              ⚡ EQUIP — {lastRoll.icon} {lastRoll.name}
+            </button>
+          )}
+        </div>
+
+        {/* Slot machine (manual + auto share same display) */}
+        {isRolling&&currentSlot&&(
+          <div style={{...card,textAlign:"center",padding:autoSpin?"14px 14px":"22px 14px",border:`1px solid ${currentSlotR?.color??"#818cf8"}40`,background:`${currentSlotR?.color??"#818cf8"}08`,animation:"slotFlick .14s ease-in-out infinite"}}>
+            <div style={{fontSize:autoSpin?"36px":"54px",marginBottom:"6px",display:"inline-block",lineHeight:1,animation:"spinIcon .28s linear infinite"}}>{currentSlot.icon}</div>
+            <div style={{fontFamily:th.font,fontSize:autoSpin?"13px":"17px",color:currentSlotR?.color??"#818cf8",letterSpacing:"2px"}}>{currentSlot.name}</div>
+            {!autoSpin&&<div style={{fontSize:"9px",color:th.muted,letterSpacing:"2px",marginTop:"4px"}}>{currentSlotR?.label.toUpperCase()}</div>}
+            {autoSpin&&<div style={{fontSize:"8px",color:th.muted,letterSpacing:"1px",marginTop:"3px"}}>AUTO</div>}
+          </div>
+        )}
+
+        {/* Roll button */}
+        <button onClick={handleRoll} disabled={isRolling} style={{padding:"17px",background:isRolling?"rgba(100,100,100,.2)":th.rollBtn,border:"none",borderRadius:"10px",color:isRolling?"rgba(255,255,255,.4)":"#fff",fontFamily:th.font,fontSize:"17px",fontWeight:700,letterSpacing:"5px",cursor:isRolling?"not-allowed":"pointer",animation:isRolling?"none":th.rollAnim,display:"flex",alignItems:"center",justifyContent:"center",gap:"10px"}}>
+          {isRolling?<><span style={{display:"inline-block",animation:"spinIcon .7s linear infinite"}}>⟳</span>{autoSpin?"AUTO...":"ROLLING..."}</>:isTechy?"> ROLL":"⚡ ROLL"}
+        </button>
+
+        {/* Auto + Shop + Worlds */}
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}}>
+          <button onClick={()=>setAuto(a=>!a)} style={{padding:"11px",background:auto?`${th.accent}20`:"rgba(255,255,255,.03)",border:`1px solid ${auto?th.accent+"80":"rgba(255,255,255,.07)"}`,borderRadius:"8px",color:auto?th.accent:"#475569",fontFamily:th.font,fontSize:"10px",letterSpacing:"2px",cursor:"pointer"}}>🤖 AUTO: {auto?"ON":"OFF"}</button>
+          <button onClick={()=>setShopOpen(s=>!s)} style={{padding:"11px",background:shopOpen?`${th.accent}18`:"rgba(255,255,255,.03)",border:`1px solid ${shopOpen?th.accent+"60":"rgba(255,255,255,.07)"}`,borderRadius:"8px",color:shopOpen?th.accent:"#475569",fontFamily:th.font,fontSize:"10px",letterSpacing:"2px",cursor:"pointer"}}>🛒 {isTechy?"UPGRADES":"LUCK SHOP"}</button>
+        </div>
+        <button onClick={()=>setWorldsOpen(true)} style={{padding:"11px",background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.07)",borderRadius:"8px",color:"#475569",fontFamily:th.font,fontSize:"10px",letterSpacing:"2px",cursor:"pointer"}}>🗺️ WORLDS ({unlockedWorlds.length}/{WORLDS.length})</button>
+
+        {auto&&<div style={{textAlign:"center",fontSize:"10px",color:th.muted,letterSpacing:"1px"}}>Rolling every ~{effectiveSpeedMs}ms · {fmt(coins)} coins earned</div>}
+
+        {/* Shop */}
+        {shopOpen&&(
+          <div style={{...card,animation:"slideDown .2s ease-out"}}>
+            <div style={{fontFamily:th.font,fontSize:"9px",letterSpacing:"3px",color:th.muted,marginBottom:"12px"}}>⭐ LUCK UPGRADES</div>
+            <div style={{display:"flex",flexDirection:"column",gap:"6px",marginBottom:"16px"}}>
+              {LUCK_SHOP.map(item=>(
+                <div key={item.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"rgba(255,255,255,.02)",border:"1px solid rgba(255,255,255,.05)",borderRadius:"7px",padding:"8px 11px"}}>
+                  <div><div style={{fontSize:"12px",color:"#cbd5e1"}}>{item.name}</div><div style={{fontSize:"9px",color:"#4ade80",marginTop:"1px"}}>{item.label}</div></div>
+                  <button onClick={()=>buyLuck(item)} disabled={coins<item.cost} style={{background:coins>=item.cost?`${th.accent}20`:"rgba(255,255,255,.03)",border:`1px solid ${coins>=item.cost?th.accent+"60":"rgba(255,255,255,.06)"}`,borderRadius:"6px",padding:"5px 11px",color:coins>=item.cost?th.accent:"#334155",fontSize:"10px",cursor:coins<item.cost?"not-allowed":"pointer",whiteSpace:"nowrap"}}>💰 {fmt(item.cost)}</button>
+                </div>
+              ))}
+            </div>
+            <div style={{fontFamily:th.font,fontSize:"9px",letterSpacing:"3px",color:th.muted,marginBottom:"12px"}}>⚡ SPEED UPGRADES</div>
+            <div style={{display:"flex",flexDirection:"column",gap:"6px"}}>
+              {SPEED_SHOP.map(item=>{const owned=speedLvl>=item.level;return(
+                <div key={item.level} style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"rgba(255,255,255,.02)",border:"1px solid rgba(255,255,255,.05)",borderRadius:"7px",padding:"8px 11px",opacity:owned?.5:1}}>
+                  <div><div style={{fontSize:"12px",color:"#cbd5e1"}}>{item.name}</div><div style={{fontSize:"9px",color:"#60a5fa",marginTop:"1px"}}>Interval: {item.label}</div></div>
+                  <button onClick={()=>buySpeed(item)} disabled={owned||coins<item.cost} style={{background:owned?"rgba(34,197,94,.1)":coins>=item.cost?"rgba(96,165,250,.14)":"rgba(255,255,255,.03)",border:`1px solid ${owned?"rgba(34,197,94,.3)":coins>=item.cost?"rgba(96,165,250,.4)":"rgba(255,255,255,.06)"}`,borderRadius:"6px",padding:"5px 11px",color:owned?"#4ade80":coins>=item.cost?"#60a5fa":"#334155",fontSize:"10px",cursor:(owned||coins<item.cost)?"not-allowed":"pointer",whiteSpace:"nowrap"}}>{owned?"✓ Owned":`💰 ${fmt(item.cost)}`}</button>
+                </div>
+              );})}
+            </div>
+            {unlockedWorlds.length>0&&(<>
+              <div style={{fontFamily:th.font,fontSize:"9px",letterSpacing:"3px",color:th.muted,marginTop:"16px",marginBottom:"12px"}}>🗺️ WORLD ITEMS</div>
+              <div style={{display:"flex",flexDirection:"column",gap:"6px"}}>
+                {unlockedWorlds.map(wid=>{const w=WORLDS.find(x=>x.id===wid);const owned=worldItemsBought.includes(wid);return(
+                  <div key={wid} style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:`${w.color}08`,border:`1px solid ${w.color}20`,borderRadius:"7px",padding:"8px 11px",opacity:owned?.5:1}}>
+                    <div><div style={{fontSize:"12px",color:"#cbd5e1"}}>{w.icon} {w.shopItem.name}</div><div style={{fontSize:"9px",color:w.color,marginTop:"1px"}}>+{w.shopItem.boost} Luck</div></div>
+                    <button onClick={()=>buyWorldItem(w)} disabled={owned||coins<w.shopItem.cost} style={{background:owned?"rgba(34,197,94,.1)":coins>=w.shopItem.cost?`${w.color}20`:"rgba(255,255,255,.03)",border:`1px solid ${owned?"rgba(34,197,94,.3)":coins>=w.shopItem.cost?w.color+"60":"rgba(255,255,255,.06)"}`,borderRadius:"6px",padding:"5px 11px",color:owned?"#4ade80":coins>=w.shopItem.cost?w.color:"#334155",fontSize:"10px",cursor:(owned||coins<w.shopItem.cost)?"not-allowed":"pointer",whiteSpace:"nowrap"}}>{owned?"✓ Owned":`💰 ${fmt(w.shopItem.cost)}`}</button>
+                  </div>
+                );})}
+              </div>
+            </>)}
+          </div>
+        )}
+
+        {/* Redeem */}
+        <div style={card}>
+          <div style={{display:"flex",alignItems:"center",gap:"6px",marginBottom:"10px"}}><span>🔑</span><span style={{fontFamily:th.font,fontSize:"9px",letterSpacing:"3px",color:th.muted}}>REDEEM CODE</span></div>
+          <div style={{display:"flex",gap:"7px"}}>
+            <input value={codeInput} onChange={e=>setCodeInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&redeem()} placeholder={isTechy?"enter_code...":"Enter code..."} style={{flex:1,background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderRadius:"7px",padding:"9px 12px",color:"#e2e8f0",fontSize:"12px",fontFamily:th.font}}/>
+            <button onClick={redeem} style={{padding:"9px 16px",background:`${th.accent}20`,border:`1px solid ${th.accent}60`,borderRadius:"7px",color:th.accent,fontFamily:th.font,fontSize:"10px",letterSpacing:"1px"}}>REDEEM</button>
+          </div>
+          <div style={{fontSize:"9px",color:th.muted,marginTop:"6px"}}>Try: AURA2024 · LUCKYSTAR · FREEGEMS · PRIMORDIAL · UPDATE1</div>
+          <div style={{fontSize:"9px",color:"#ec4899",marginTop:"3px",letterSpacing:"1px"}}>🎂 Birthday: HAPPYBDAY · JUNE7TH</div>
+        </div>
+
+        {/* History */}
+        <div style={card}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"11px"}}>
+            <div style={{display:"flex",alignItems:"center",gap:"8px"}}><span style={{fontFamily:th.font,fontSize:"9px",letterSpacing:"3px",color:th.muted}}>ROLL HISTORY</span><span style={{color:th.muted,fontSize:"10px"}}>{rolls.toLocaleString()} rolls</span></div>
+            <button onClick={()=>setCollOpen(true)} style={{display:"flex",alignItems:"center",gap:"5px",background:`${th.accent}14`,border:`1px solid ${th.accent}40`,borderRadius:"7px",padding:"5px 12px",color:th.accent,fontFamily:th.font,fontSize:"9px",letterSpacing:"1px",cursor:"pointer"}}>🏆 COLLECTION</button>
+          </div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:"5px",maxHeight:"220px",overflowY:"auto"}}>
+            {history.length===0?<div style={{color:th.muted,fontSize:"11px",letterSpacing:"2px",width:"100%",textAlign:"center",padding:"24px",fontFamily:th.font}}>{isTechy?"> awaiting input_":"Hit ROLL to begin"}</div>:history.map((a,i)=><Badge key={i} aura={a}/>)}
+          </div>
+        </div>
+
+        {/* Rarity reference */}
+        <div style={card}>
+          <div style={{fontFamily:th.font,fontSize:"9px",letterSpacing:"3px",color:th.muted,marginBottom:"10px"}}>RARITY REFERENCE</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"5px"}}>
+            {RK.map(k=>{const rc=RARITY[k];const w=rc.weight;const pct=w===0?"Code Only":w<.0001?`${(w/TOTAL_W*100).toFixed(6)}%`:w<.01?`${(w/TOTAL_W*100).toFixed(4)}%`:w<.1?`${(w/TOTAL_W*100).toFixed(3)}%`:`${(w/TOTAL_W*100).toFixed(1)}%`;return(<div key={k} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"4px 8px",background:`${rc.color}10`,border:`1px solid ${rc.color}22`,borderRadius:"5px"}}><span style={{color:rc.color,fontSize:"9px",fontFamily:th.font}}>{rc.label}</span><span style={{color:th.muted,fontSize:"7.5px"}}>{pct}</span></div>);})}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
